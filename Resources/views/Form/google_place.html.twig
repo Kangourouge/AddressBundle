@@ -1,0 +1,77 @@
+{% block google_place_widget %}
+    {% spaceless %}
+        {{ block('form_widget_simple') }}
+
+        {% if api is not null %}
+            {{ api|raw }}
+        {% endif %}
+
+        <script type="text/javascript">
+            (function () {
+                var input = document.getElementById('{{ form.vars.id }}');
+                var country, autocomplete;
+
+                if (input.hasAttribute('data-country')) {
+                    country = document.getElementById(input.getAttribute('data-country'));
+                    if (country !== null) {
+                        $(country).on('change', function(event){
+                            if (autocomplete === null) {
+                                return;
+                            }
+                            google.maps.event.clearListeners(autocomplete, 'place_changed');
+                            input.addEventListener('keydown', onKeydown);
+
+                            var event = createEvent('reset');
+                            input.dispatchEvent(event);
+                        });
+                    }
+                }
+
+                input.addEventListener('keydown', onKeydown);
+
+                function onKeydown(event) {
+                    var options = {{ options|json_encode()|raw }};
+                    if (country instanceof HTMLElement) {
+                        options.componentRestrictions['country'] = country.selectedOptions.item(0).getAttribute('data-code');
+                    }
+                    autocomplete = new google.maps.places.Autocomplete(input, options);
+                    autocomplete.getAddressValue = function(addressType, addressFormat, components) {
+                        for (var i = 0; i < components.length; i++) {
+                            if (components[i].types[0] === addressType) {
+                                return components[i][addressFormat];
+                            }
+                        }
+                        return '';
+                    };
+
+                    google.maps.event.addListener(autocomplete, 'place_changed', onPlaceChange);
+                    input.removeEventListener('keydown', onKeydown);
+                }
+
+                function onPlaceChange(event) {
+                    {% if address_type is not null %}
+                        var place = autocomplete.getPlace();
+                        var components = place.address_components;
+                        input.setAttribute('value', autocomplete.getAddressValue('{{ address_type }}', '{{ address_format }}', components));
+                    {% endif %}
+
+                    var event = createEvent('place_changed');
+                    event.autocomplete = autocomplete;
+
+                    input.dispatchEvent(event);
+                }
+
+                function createEvent(name) {
+                    var event;
+                    try {
+                        event = new CustomEvent(name);
+                    } catch(e) {
+                        event = document.createEvent('CustomEvent');
+                        event.initEvent(name, true, true);
+                    }
+                    return event;
+                }
+            })();
+        </script>
+    {% endspaceless %}
+{% endblock %}

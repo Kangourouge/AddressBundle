@@ -1,0 +1,20 @@
+services:
+    emc.address.form.google_place:
+        class: KRG\AddressBundle\Form\Type\GooglePlaceType
+        arguments: [@emc.address.ivory_google_map.helper.api, %emc_address.google_maps.api_key%, %locale%]
+        tags:
+            - { name: form.type, alias: google_place }
+
+    emc.address.form.address:
+        class: KRG\AddressBundle\Form\Type\AddressType
+        tags:
+            - { name: form.type, alias: address }
+        calls:
+            - [setCountry, [%emc_address.google_maps.country%]]
+            - [setAddressClass, [%emc_address.address_class%]]
+            - [setCountryClass, [%emc_address.country_class%]]
+
+    emc.address.ivory_google_map.helper.api:
+        class: KRG\AddressBundle\Ivory\GoogleMap\Helper\ApiHelper
+        arguments: [%emc_address.google_maps.api_key%, ['places'], %locale%]
+        public: false

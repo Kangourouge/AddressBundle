@@ -1,0 +1,38 @@
+{% block google_search_widget %}
+    {{ block('form_widget') }}
+
+    <script type="text/javascript">
+        (function(){
+            var locationInput = document.getElementById('{{ form.location.vars.id }}');
+            var placeInput = document.getElementById('{{ form.place.vars.id }}');
+
+            locationInput.addEventListener('place_changed', onPlaceChange);
+            locationInput.addEventListener('keyup', onReset);
+            locationInput.addEventListener('reset', onReset);
+
+            function onPlaceChange(event) {
+                event.preventDefault();
+                var googlePlace = event.autocomplete.getPlace();
+
+                var place = {};
+                place['address_components'] = googlePlace.address_components;
+                place['formatted_address'] = googlePlace.formatted_address;
+                place['coordinate'] = {};
+                place['coordinate']['latitude'] = googlePlace.geometry.location.lat();
+                place['coordinate']['longitude'] = googlePlace.geometry.location.lng();
+                place['types'] = googlePlace.types;
+                place['vicinity'] = googlePlace.vicinity;
+
+                console.log(place);
+
+                placeInput.value = JSON.stringify(place);
+            }
+
+            function onReset(event) {
+                event.preventDefault();
+                placeInput.value = '';
+            }
+        })();
+    </script>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+form:
+    address:
+        address: Votre adresse
+        address1: Adresse ligne 1
+        address2: Adresse ligne 2
+        postalCode: Code Postal
+        city: Ville
+        country: Pays
+        department: Departement

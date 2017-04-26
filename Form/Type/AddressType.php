@@ -1,0 +1,111 @@
+<?php
+
+namespace KRG\AddressBundle\Form\Type;
+
+use KRG\AddressBundle\Entity\Country;
+use KRG\AddressBundle\Entity\CountryInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
+
+class AddressType extends AbstractType
+{
+    /**
+     * @var string
+     */
+    private $country;
+
+    /**
+     * @var string
+     */
+    private $addressClass;
+
+    /**
+     * @var string
+     */
+    private $countryClass;
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @param string $addressClass
+     */
+    public function setAddressClass($addressClass)
+    {
+        $this->addressClass = $addressClass;
+    }
+
+    /**
+     * @param string $countryClass
+     */
+    public function setCountryClass($countryClass)
+    {
+        $this->countryClass = $countryClass;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('address1', 'google_place', array(
+                'component_restrictions' => array('country' => $this->country),
+                'types'  => array(),
+                'label'  => false,
+                'attr'  => array('placeholder' => 'form.address.address1')
+            ))
+            ->add('address2', 'text', array(
+                'required' => false,
+                'label'    => false,
+                'attr'  => array('placeholder' => 'form.address.address2'),
+            ))
+            ->add('postalCode', 'google_place', array(
+                'component_restrictions' => array('country' => $this->country),
+                'types'  => array('(regions)'),
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.postalCode'),
+            ))
+            ->add('city', 'text', array(
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.city'),
+            ))
+            ->add('country', 'entity', array(
+                'class' => $this->countryClass,
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.country'),
+                'choice_attr' => function(CountryInterface $country, $key, $index) {
+                    return array('data-code' => $country->getCode());
+                },
+            ))
+            ->add('latitude', 'hidden')
+            ->add('longitude', 'hidden')
+            ->add('department', 'hidden')
+            ->add('region', 'hidden')
+            ->add('approximate', 'hidden');
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::finishView($view, $form, $options);
+        $view->children['address1']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
+        $view->children['postalCode']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => $this->addressClass,
+        ));
+    }
+
+    public function getName()
+    {
+        return 'address';
+    }
+}

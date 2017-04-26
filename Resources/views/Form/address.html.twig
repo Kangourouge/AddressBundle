@@ -1,0 +1,118 @@
+{% block address_widget %}
+    {% spaceless %}
+        {% set attr = attr|merge({'autocomplete':'off'}) %}
+        {{ block('form_widget_compound') }}
+        <p class="text text-warning address-approximate hide">
+            La géolocalisation de cette adresse est approximative.
+        </p>
+
+        <script type="text/javascript">
+            (function () {
+
+                var address = document.getElementById('{{ form.vars.id }}');
+
+                var address1 = document.getElementById('{{ form.address1.vars.id }}');
+                var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
+                var approximate = document.getElementById('{{ form.approximate.vars.id }}');
+
+                var mapping = {
+                    address1: address1,
+                    address2: document.getElementById('{{ form.address2.vars.id }}'),
+                    postalCode: postalCode,
+                    city: document.getElementById('{{ form.city.vars.id }}'),
+                    department: document.getElementById('{{ form.department.vars.id }}'),
+                    region: document.getElementById('{{ form.region.vars.id }}'),
+                    latitude: document.getElementById('{{ form.latitude.vars.id }}'),
+                    longitude: document.getElementById('{{ form.longitude.vars.id }}')
+                };
+
+                var fields = ['postalCode', 'city', 'department', 'region', 'latitude', 'longitude'];
+
+                function onPlaceChange(event) {
+                    event.preventDefault();
+
+                    var isApproximate = event.target === postalCode;
+
+                    var fields = isApproximate ? fields : [];
+
+                    approximate.value = isApproximate ? 1 : 0;
+                    if (isApproximate) {
+                        address.nextElementSibling.classList.remove('hide');
+                    } else {
+                        address.nextElementSibling.classList.add('hide');
+                    }
+
+                    update(event.autocomplete, fields);
+                }
+
+                function onReset(event) {
+                    event.preventDefault();
+                    var fields = event.target === postalCode ? fields : [];
+                    reset(event.target, fields);
+                }
+
+                function reset(element, fields) {
+                    for (var field in mapping) {
+                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
+                            continue;
+                        }
+                        if (mapping[field] === element) {
+                            continue;
+                        }
+                        mapping[field].value = '';
+                        mapping[field].setAttribute('value', '');
+                    }
+                }
+
+                function update(autocomplete, fields) {
+                    var place = autocomplete.getPlace();
+                    var components = place.address_components;
+                    var value;
+                    for (var field in mapping) {
+                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
+                            continue;
+                        }
+                        value = '';
+                        switch(field) {
+                            case 'address1':
+                                value = autocomplete.getAddressValue('street_number', 'short_name', components);
+                                if (value.length > 0) {
+                                    value = value + ', ';
+                                }
+                                value = value + autocomplete.getAddressValue('route', 'short_name', components);
+                                break;
+                            case 'postalCode':
+                                value = autocomplete.getAddressValue('postal_code', 'short_name', components);
+                                break;
+                            case 'city':
+                                value = autocomplete.getAddressValue('locality', 'short_name', components);
+                                break;
+                            case 'department':
+                                value = autocomplete.getAddressValue('administrative_area_level_2', 'long_name', components);
+                                break;
+                            case 'region':
+                                value = autocomplete.getAddressValue('administrative_area_level_1', 'long_name', components);
+                                break;
+                            case 'latitude':
+                                value = place.geometry.location.lat();
+                                break;
+                            case 'longitude':
+                                value = place.geometry.location.lng();
+                                break;
+                        }
+                        mapping[field].value = value;
+                        mapping[field].setAttribute('value', value);
+                    }
+                }
+
+                address1.addEventListener('place_changed', onPlaceChange);
+                address1.addEventListener('keyup', onReset);
+                address1.addEventListener('reset', onReset);
+
+                postalCode.addEventListener('place_changed', onPlaceChange);
+                postalCode.addEventListener('keyup', onReset);
+                postalCode.addEventListener('reset', onReset);
+            })();
+        </script>
+    {% endspaceless %}
+{% endblock %}

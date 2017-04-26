@@ -1,0 +1,21 @@
+{
+    "name": "kangourouge/address-bundle",
+    "description": "Kangourouge Address Bundle based on Google Place Search",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chafiq El Mechrafi",
+            "email": "chafiq.elmechrafi@gmail.com",
+        }
+    ],
+    "require": {
+        "php": ">=5.3.9",
+        "symfony/symfony": "2.8.*",
+        "doctrine/orm": "^2.5.6"
+    },
+    "autoload": {
+        "psr-0": { "KRG\\AddressBundle": "" }
+    },
+    "target-dir": "KRG/AddressBundle"
+}
