@@ -2,9 +2,10 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
-use KRG\AddressBundle\Entity\Country;
+use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Entity\CountryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
@@ -54,6 +55,18 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('country', 'entity', array(
+                'class' => $this->countryClass,
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.country'),
+                'choice_attr' => function(CountryInterface $country, $key, $index) {
+                    return array('data-code' => strtolower($country->getCode()));
+                },
+                'query_builder' => function(EntityRepository $repository) {
+                    return $repository->createQueryBuilder('c')
+                        ->orderBy('c.name');
+                }
+            ))
             ->add('address1', 'google_place', array(
                 'component_restrictions' => array('country' => $this->country),
                 'types'  => array(),
@@ -74,14 +87,6 @@ class AddressType extends AbstractType
             ->add('city', 'text', array(
                 'label' => false,
                 'attr'  => array('placeholder' => 'form.address.city'),
-            ))
-            ->add('country', 'entity', array(
-                'class' => $this->countryClass,
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.country'),
-                'choice_attr' => function(CountryInterface $country, $key, $index) {
-                    return array('data-code' => $country->getCode());
-                },
             ))
             ->add('latitude', 'hidden')
             ->add('longitude', 'hidden')

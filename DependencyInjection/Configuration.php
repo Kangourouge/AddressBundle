@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('google_maps')
                     ->children()
                         ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('country')->isRequired()->cannotBeEmpty()->defaultValue('fr')->end()
+                        ->scalarNode('country')->defaultValue(null)->end()
                     ->end()
                 ->end()
             ->end()
