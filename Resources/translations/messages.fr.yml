@@ -7,3 +7,5 @@ form:
         city: Ville
         country: Pays
         department: Departement
+
+approximative: La géolocalisation de cette adresse est approximative.

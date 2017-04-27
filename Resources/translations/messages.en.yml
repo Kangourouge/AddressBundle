@@ -1,0 +1,12 @@
+form:
+    address:
+        address: Address
+        address1: Address line 1
+        address2: Address line 2
+        postalCode: Postal Code
+        city: City
+        country: Country
+        department: Department
+        region: Region
+
+approximative: The address's geolocation is approximative.

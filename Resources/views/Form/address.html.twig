@@ -3,7 +3,7 @@
         {% set attr = attr|merge({'autocomplete':'off'}) %}
         {{ block('form_widget_compound') }}
         <p class="text text-warning address-approximate hide">
-            La géolocalisation de cette adresse est approximative.
+            {{ "approximative"|trans() }}
         </p>
 
         <script type="text/javascript">
