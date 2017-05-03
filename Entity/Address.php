@@ -81,7 +81,7 @@ abstract class Address
     {
         $this->latitude = 0;
         $this->longitude = 0;
-        $this->approximate = false;
+        $this->approximate = true;
     }
 
     public function __toString()

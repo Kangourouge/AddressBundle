@@ -4,8 +4,10 @@ namespace KRG\AddressBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Entity\CountryInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
@@ -55,49 +57,52 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('country', 'entity', array(
-                'class' => $this->countryClass,
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.country'),
-                'choice_attr' => function(CountryInterface $country, $key, $index) {
+            ->add('country', EntityType::class, array(
+                'class'         => $this->countryClass,
+                'label'         => false,
+                'attr'          => array('placeholder' => 'form.address.country'),
+                'choice_attr'   => function (CountryInterface $country, $key, $index) {
                     return array('data-code' => strtolower($country->getCode()));
                 },
-                'query_builder' => function(EntityRepository $repository) {
+                'query_builder' => function (EntityRepository $repository) {
                     return $repository->createQueryBuilder('c')
                         ->orderBy('c.name');
                 }
             ))
-            ->add('address1', 'google_place', array(
+            ->add('address1', GooglePlaceType::class, array(
                 'component_restrictions' => array('country' => $this->country),
-                'types'  => array(),
-                'label'  => false,
-                'attr'  => array('placeholder' => 'form.address.address1')
+                'types'                  => array(),
+                'label'                  => false,
+                'attr'                   => array('placeholder' => 'form.address.address1'),
             ))
-            ->add('address2', 'text', array(
+            ->add('address2', TextType::class, array(
                 'required' => false,
                 'label'    => false,
-                'attr'  => array('placeholder' => 'form.address.address2'),
+                'attr'     => array('placeholder' => 'form.address.address2'),
             ))
-            ->add('postalCode', 'google_place', array(
+            ->add('postalCode', GooglePlaceType::class, array(
                 'component_restrictions' => array('country' => $this->country),
-                'types'  => array('(regions)'),
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.postalCode'),
+                'types'                  => array('(regions)'),
+                'label'                  => false,
+                'attr'                   => array('placeholder' => 'form.address.postalCode'),
             ))
-            ->add('city', 'text', array(
+            ->add('city', TextType::class, array(
                 'label' => false,
                 'attr'  => array('placeholder' => 'form.address.city'),
             ))
-            ->add('latitude', 'hidden')
-            ->add('longitude', 'hidden')
-            ->add('department', 'hidden')
-            ->add('region', 'hidden')
-            ->add('approximate', 'hidden');
+            ->add('latitude', HiddenType::class)
+            ->add('longitude', HiddenType::class)
+            ->add('department', HiddenType::class)
+            ->add('region', HiddenType::class)
+            ->add('approximate', HiddenType::class, array(
+                'empty_data' => true
+            ));
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         parent::finishView($view, $form, $options);
+
         $view->children['address1']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
         $view->children['postalCode']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
     }
