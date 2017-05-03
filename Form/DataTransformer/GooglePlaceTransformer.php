@@ -9,7 +9,7 @@ class GooglePlaceTransformer implements DataTransformerInterface
 {
 	public function transform($value)
 	{
-		if (!$value instanceof GooglePlaceModel){
+        if (!$value instanceof GooglePlaceModel){
 			return array(
 				'location' => null,
 				'place' => null

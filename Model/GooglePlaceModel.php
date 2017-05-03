@@ -48,7 +48,8 @@ class GooglePlaceModel
 		switch ($this->data['types'][0]){
 			case 'street_address':
 			case 'route':
-			case 'postal_code':
+            case 'postal_code':
+            case 'neighborhood':
 				return 'coordinate';
 			case 'locality':
 				return 'city';
@@ -62,9 +63,13 @@ class GooglePlaceModel
 
 	public function getCoordinate()
 	{
+	    $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
+        $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
+
 		$coordinate = new Coordinate();
-		$coordinate->setLatitude($this->data['coordinate']['latitude']);
-		$coordinate->setLongitude($this->data['coordinate']['longitude']);
+		$coordinate->setLatitude($latitude);
+		$coordinate->setLongitude($longitude);
+
 		return $coordinate;
 	}
 
@@ -98,13 +103,10 @@ class GooglePlaceModel
 		$this->address->setPostalCode($this->getProperty('postal_code', 'long_name'));
 
 		$this->address->setAddress1($this->getProperty('route', 'long_name'));
-		if($this->getProperty('street_number', 'long_name') !== null){
-			$this->address->setAddress1($this->getProperty('street_number', 'long_name'). ' ' .$this->getProperty('route', 'long_name'));
-		}
+        if ($this->getProperty('street_number', 'long_name') !== null) {
+            $this->address->setAddress1($this->getProperty('street_number', 'long_name').' '.$this->getProperty('route', 'long_name'));
+        }
 
 		return $this->address;
-
 	}
-
-
 }

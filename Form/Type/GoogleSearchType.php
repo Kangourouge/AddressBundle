@@ -11,20 +11,16 @@ class GoogleSearchType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-
 		$builder
 			->add('location', GooglePlaceType::class, array(
-				'mapped' => false,
-	            'required' => false,
-	            'component_restrictions' => array('country' => array('fr','be')),
-	            'types'                  => array('geocode'),
-	            'address_type'           => 'locality',
-	            'address_format'         => 'short_name',
+                'required'               => false,
+                'component_restrictions' => array('country' => array('fr', 'be')),
+                'types'                  => array('geocode'),
+                'address_type'           => 'locality',
+                'address_format'         => 'short_name',
 			))
 			->add('place', HiddenType::class);
 
 		$builder->addModelTransformer(new GooglePlaceTransformer());
 	}
-
-
 }
