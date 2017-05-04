@@ -33,7 +33,7 @@
 
                     var isApproximate = event.target === postalCode;
 
-                    var fields = isApproximate ? fields : [];
+                    var _fields = isApproximate ? fields : [];
 
                     approximate.value = isApproximate ? 1 : 0;
                     if (isApproximate) {
@@ -42,13 +42,13 @@
                         address.nextElementSibling.classList.add('hide');
                     }
 
-                    update(event.autocomplete, fields);
+                    update(event.autocomplete, _fields);
                 }
 
                 function onReset(event) {
                     event.preventDefault();
-                    var fields = event.target === postalCode ? fields : [];
-                    reset(event.target, fields);
+                    var _fields = event.target === postalCode ? fields : [];
+                    reset(event.target, _fields);
                 }
 
                 function reset(element, fields) {
