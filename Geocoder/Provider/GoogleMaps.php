@@ -80,7 +80,7 @@ class GoogleMaps extends BaseGoogleMaps
             throw new NoResult(sprintf('Could not execute query "%s".', $query));
         }
 
-        $json = json_decode($content, true);
+        $json = json_decode($content);
 
         // API error
         if (!isset($json)) {
@@ -106,6 +106,6 @@ class GoogleMaps extends BaseGoogleMaps
             throw new NoResult(sprintf('Could not execute query "%s".', $query));
         }
 
-        return $json;
+        return (array)$json;
     }
 }
