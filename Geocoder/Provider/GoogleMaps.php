@@ -84,26 +84,25 @@ class GoogleMaps extends BaseGoogleMaps
 
         // API error
         if (!isset($json)) {
-            throw new NoResult(sprintf('Could not execute query "%s".', $query));
+            return sprintf('Could not execute query "%s".', $query);
         }
 
         if ('REQUEST_DENIED' === $json->status && 'The provided API key is invalid.' === $json->error_message) {
-            throw new InvalidCredentials(sprintf('API key is invalid %s', $query));
+            return sprintf('API key is invalid %s', $query);
         }
 
         if ('REQUEST_DENIED' === $json->status) {
-            throw new Exception(sprintf('API access denied. Request: %s - Message: %s',
-                $query, $json->error_message));
+            return sprintf('API access denied. Request: %s - Message: %s', $query, $json->error_message);
         }
 
         // you are over your quota
         if ('OVER_QUERY_LIMIT' === $json->status) {
-            throw new QuotaExceeded(sprintf('Daily quota exceeded %s', $query));
+            return sprintf('Daily quota exceeded %s', $query);
         }
 
         // no result
         if (!isset($json->results) || !count($json->results) || 'OK' !== $json->status) {
-            throw new NoResult(sprintf('Could not execute query "%s".', $query));
+            return sprintf('Could not execute query "%s".', $query);
         }
 
         return (array)$json;

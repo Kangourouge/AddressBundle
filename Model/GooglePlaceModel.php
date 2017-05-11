@@ -78,7 +78,7 @@ class GooglePlaceModel
 		if (!isset($this->normalizedData[$property])) {
 			$this->normalizedData[$property] = array();
 		} else if (isset($this->normalizedData[$property][$name])) {
-			return $property;
+			return $this->normalizedData[$property][$name];
 		}
 
 		foreach ($this->data['address_components'] as $component) {
