@@ -36,9 +36,8 @@ class GoogleMaps extends BaseGoogleMaps
      */
     public function __construct(HttpAdapterInterface $adapter, $locale = null, $region = null, $useSsl = false, $apiKey = null)
     {
-        parent::__construct($adapter);
+        parent::__construct($adapter, $locale);
 
-        $this->locale = $locale;
         $this->region = $region;
         $this->useSsl = $useSsl;
         $this->apiKey = $apiKey;
@@ -80,31 +79,32 @@ class GoogleMaps extends BaseGoogleMaps
             throw new NoResult(sprintf('Could not execute query "%s".', $query));
         }
 
-        $json = json_decode($content);
+        $json = json_decode($content, true);
 
         // API error
         if (!isset($json)) {
             return sprintf('Could not execute query "%s".', $query);
         }
 
-        if ('REQUEST_DENIED' === $json->status && 'The provided API key is invalid.' === $json->error_message) {
-            return sprintf('API key is invalid %s', $query);
+        if ('REQUEST_DENIED' === $json['status'] && 'The provided API key is invalid.' === $json['error_message']) {
+            throw new InvalidCredentials(sprintf('API key is invalid %s', $query));
         }
 
-        if ('REQUEST_DENIED' === $json->status) {
-            return sprintf('API access denied. Request: %s - Message: %s', $query, $json->error_message);
+        if ('REQUEST_DENIED' === $json['status']) {
+            throw new Exception(sprintf('API access denied. Request: %s - Message: %s',
+                $query, $json['error_message']));
         }
 
         // you are over your quota
-        if ('OVER_QUERY_LIMIT' === $json->status) {
-            return sprintf('Daily quota exceeded %s', $query);
+        if ('OVER_QUERY_LIMIT' === $json['status']) {
+            throw new QuotaExceeded(sprintf('Daily quota exceeded %s', $query));
         }
 
         // no result
-        if (!isset($json->results) || !count($json->results) || 'OK' !== $json->status) {
-            return sprintf('Could not execute query "%s".', $query);
+        if (!isset($json['results']) || !count($json['results']) || 'OK' !== $json['status']) {
+            throw new NoResult(sprintf('Could not execute query "%s".', $query));
         }
 
-        return (array)$json;
+        return $json;
     }
 }

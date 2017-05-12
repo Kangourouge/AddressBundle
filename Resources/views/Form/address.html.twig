@@ -11,11 +11,13 @@
 
                 var address = document.getElementById('{{ form.vars.id }}');
 
+                var name = document.getElementById('{{ form.name.vars.id }}');
                 var address1 = document.getElementById('{{ form.address1.vars.id }}');
                 var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
                 var approximate = document.getElementById('{{ form.approximate.vars.id }}');
 
                 var mapping = {
+                    name: name,
                     address1: address1,
                     address2: document.getElementById('{{ form.address2.vars.id }}'),
                     postalCode: postalCode,
@@ -74,6 +76,13 @@
                         }
                         value = '';
                         switch(field) {
+                            case 'name':
+                                mapping[field].classList.add('hide');
+                                if (place.types[0] !== 'street_address' && place.name) {
+                                    value = place.name;
+                                    mapping[field].classList.remove('hide');
+                                }
+                                break;
                             case 'address1':
                                 value = autocomplete.getAddressValue('street_number', 'short_name', components);
                                 if (value.length > 0) {
@@ -104,6 +113,10 @@
                         mapping[field].setAttribute('value', value);
                     }
                 }
+
+                name.addEventListener('place_changed', onPlaceChange);
+                name.addEventListener('keyup', onReset);
+                name.addEventListener('reset', onReset);
 
                 address1.addEventListener('place_changed', onPlaceChange);
                 address1.addEventListener('keyup', onReset);

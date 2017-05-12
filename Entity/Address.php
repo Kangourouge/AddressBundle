@@ -19,6 +19,11 @@ abstract class Address
     protected $id;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $name;
+
+    /**
      * @Assert\NotBlank
      * @ORM\Column(type="string", nullable=true)
      */
@@ -63,6 +68,11 @@ abstract class Address
     protected $country;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $formattedAddress;
+
+    /**
      * @ORM\Column(type="float")
      */
     protected $latitude;
@@ -86,7 +96,7 @@ abstract class Address
 
     public function __toString()
     {
-        $address = sprintf("%s %s %s %s, %s", $this->address1, $this->address2, $this->postalCode, $this->city, (string) $this->country);
+        $address = sprintf("%s %s %s %s %s, %s", $this->name, $this->address1, $this->address2, $this->postalCode, $this->city, (string) $this->country);
         return (string)preg_replace('/[\ ][\ ]+|\n\n+/', ' ', trim($address));
     }
 
@@ -98,6 +108,30 @@ abstract class Address
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Address
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -197,6 +231,30 @@ abstract class Address
     }
 
     /**
+     * Set formattedAddress
+     *
+     * @param string $formattedAddress
+     *
+     * @return Address
+     */
+    public function setFormattedAddress($formattedAddress)
+    {
+        $this->formattedAddress = $formattedAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get formattedAddress
+     *
+     * @return string
+     */
+    public function getFormattedAddress()
+    {
+        return $this->formattedAddress;
+    }
+
+    /**
      * Set longitude
      *
      * @param float $longitude
@@ -247,11 +305,11 @@ abstract class Address
     /**
      * Set country
      *
-     * @param string $country
+     * @param CountryInterface $country
      *
      * @return Address
      */
-    public function setCountry($country)
+    public function setCountry(CountryInterface $country)
     {
         $this->country = $country;
 
@@ -261,7 +319,7 @@ abstract class Address
     /**
      * Get country
      *
-     * @return string
+     * @return CountryInterface
      */
     public function getCountry()
     {
