@@ -69,11 +69,9 @@ class AddressType extends AbstractType
                         ->orderBy('c.name');
                 }
             ))
-            ->add('name', GooglePlaceType::class, array(
-                'component_restrictions' => array('country' => $this->country),
-                'types'                  => array(),
-                'label'                  => false,
-                'attr'                   => array('placeholder' => 'form.address.name'),
+            ->add('name', TextType::class, array(
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.name'),
             ))
             ->add('address1', GooglePlaceType::class, array(
                 'component_restrictions' => array('country' => $this->country),

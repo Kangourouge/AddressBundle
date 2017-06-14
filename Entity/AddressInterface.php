@@ -2,7 +2,6 @@
 
 namespace KRG\AddressBundle\Entity;
 
-
 use Ivory\GoogleMap\Base\Coordinate;
 
 interface AddressInterface
@@ -111,16 +110,16 @@ interface AddressInterface
 	/**
 	 * Set country
 	 *
-	 * @param string $country
+	 * @param CountryInterface $country
 	 *
 	 * @return Address
 	 */
-	public function setCountry($country);
+	public function setCountry(CountryInterface $country);
 
 	/**
 	 * Get country
 	 *
-	 * @return string
+	 * @return CountryInterface
 	 */
 	public function getCountry();
 

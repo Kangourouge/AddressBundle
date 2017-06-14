@@ -19,7 +19,7 @@ class Country implements CountryInterface
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @Assert\NotBlank
@@ -34,12 +34,15 @@ class Country implements CountryInterface
     protected $code;
 
     /**
-     * @ORM\OneToOne(targetEntity="File", cascade={"all"})
+     * @ORM\OneToOne(targetEntity="File", cascade={"merge", "detach"})
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true)
      * @var FileInterface
      */
     protected $flag;
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->name;

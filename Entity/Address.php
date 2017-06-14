@@ -3,13 +3,14 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use GEGM\FactoryBundle\Entity\AddressInterface;
 use Ivory\GoogleMap\Base\Coordinate;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Address
+abstract class Address implements AddressInterface
 {
     /**
      * @ORM\Id
@@ -24,7 +25,6 @@ abstract class Address
     protected $name;
 
     /**
-     * @Assert\NotBlank
      * @ORM\Column(type="string", nullable=true)
      */
     protected $address1;
@@ -36,32 +36,32 @@ abstract class Address
 
     /**
      * @Assert\Regex(pattern="/^[0-9]{5}$/", message="address.postalCode.regexp")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $postalCode;
 
     /**
      * @Assert\NotBlank
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $city;
 
 	/**
 	 * @Assert\NotBlank
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
 	protected $department;
 
 	/**
 	 * @Assert\NotBlank
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", nullable=true)
 	 * @var string
 	 */
 	protected $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Country", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Country", cascade={"persist", "merge", "detach"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      * @var Country
      */
@@ -73,17 +73,17 @@ abstract class Address
     protected $formattedAddress;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     protected $latitude;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
     protected $longitude;
 
     /**
-     * @ORM\Column(type="boolean", name="is_approximate", options={"default":true})
+     * @ORM\Column(type="boolean", name="is_approximate")
      */
     protected $approximate;
 

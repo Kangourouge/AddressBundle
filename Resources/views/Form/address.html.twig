@@ -77,10 +77,8 @@
                         value = '';
                         switch(field) {
                             case 'name':
-                                mapping[field].classList.add('hide');
                                 if (place.types[0] !== 'street_address' && place.name) {
                                     value = place.name;
-                                    mapping[field].classList.remove('hide');
                                 }
                                 break;
                             case 'address1':
@@ -113,10 +111,6 @@
                         mapping[field].setAttribute('value', value);
                     }
                 }
-
-                name.addEventListener('place_changed', onPlaceChange);
-                name.addEventListener('keyup', onReset);
-                name.addEventListener('reset', onReset);
 
                 address1.addEventListener('place_changed', onPlaceChange);
                 address1.addEventListener('keyup', onReset);
