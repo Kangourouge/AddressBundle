@@ -29,7 +29,7 @@ class Country implements CountryInterface
 
     /**
      * @Assert\NotBlank
-     * @ORM\Column(type="string", length=2, unique=true)
+     * @ORM\Column(type="string", length=2)
      */
     protected $code;
 
