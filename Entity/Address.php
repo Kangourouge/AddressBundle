@@ -61,7 +61,7 @@ abstract class Address implements AddressInterface
 	protected $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Country", cascade={"persist", "merge", "detach"})
+     * @ORM\ManyToOne(targetEntity="Country", cascade={"merge", "detach"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      * @var Country
      */
