@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Address implements git
+abstract class Address implements AddressInterface
 {
     /**
      * @ORM\Id
