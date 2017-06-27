@@ -3,14 +3,13 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use GEGM\FactoryBundle\Entity\AddressInterface;
 use Ivory\GoogleMap\Base\Coordinate;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Address implements AddressInterface
+abstract class Address implements git
 {
     /**
      * @ORM\Id
