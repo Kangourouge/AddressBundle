@@ -11,6 +11,7 @@
 
                 var address = document.getElementById('{{ form.vars.id }}');
 
+                var name = document.getElementById('{{ form.name.vars.id }}');
                 var address1 = document.getElementById('{{ form.address1.vars.id }}');
                 var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
                 var approximate = document.getElementById('{{ form.approximate.vars.id }}');
@@ -41,8 +42,7 @@
                     } else {
                         address.nextElementSibling.classList.add('hide');
                     }
-
-                    update(event.autocomplete, _fields);
+                    update(event.target.googleAutocomplete, _fields);
                 }
 
                 function onReset(event) {
@@ -57,6 +57,9 @@
                             continue;
                         }
                         if (mapping[field] === element) {
+                            continue;
+                        }
+                        if(field === 'name') {
                             continue;
                         }
                         mapping[field].value = '';
@@ -74,6 +77,13 @@
                         }
                         value = '';
                         switch(field) {
+                            case 'name':
+                                if (place.types[0] !== 'street_address' && place.name) {
+                                    value = place.name;
+                                } else {
+                                    value = mapping[field].value;
+                                }
+                                break;
                             case 'address1':
                                 value = autocomplete.getAddressValue('street_number', 'short_name', components);
                                 if (value.length > 0) {

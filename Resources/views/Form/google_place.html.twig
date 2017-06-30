@@ -1,5 +1,7 @@
 {% block google_place_widget %}
     {% spaceless %}
+        {% set attr = attr|merge({autocomplete:'off'}) %}
+
         {{ block('form_widget_simple') }}
 
         {% if api is not null %}
@@ -9,12 +11,12 @@
         <script type="text/javascript">
             (function () {
                 var input = document.getElementById('{{ form.vars.id }}');
-                var country, autocomplete;
+                var country, passed, options = {{ options|json_encode()|raw }}, autocomplete = null;
 
                 if (typeof(input.dataset.country) === "string") {
                     country = document.getElementById(input.dataset.country);
                     if (country !== null) {
-                        country.onchange = function (event) {
+                        country.addEventListener('change', function (event) {
                             if (autocomplete === null) {
                                 return;
                             }
@@ -24,18 +26,17 @@
 
                             var event = createEvent('reset');
                             input.dispatchEvent(event);
-                        };
+                        });
                     }
                 }
 
                 input.addEventListener('keydown', onKeydown);
 
                 function onKeydown(event) {
-                    var options = {{ options|json_encode()|raw }};
-
                     if (country instanceof HTMLElement) {
-                        options.componentRestrictions['country'] = country.selectedOptions.item(0).getAttribute('data-code');
+                        options.componentRestrictions['country'] = country.options[country.selectedIndex].getAttribute('data-code');
                     }
+
                     autocomplete = new google.maps.places.Autocomplete(input, options);
                     autocomplete.getAddressValue = function (addressType, addressFormat, components) {
                         for (var i = 0; i < components.length; i++) {
@@ -46,6 +47,8 @@
 
                         return '';
                     };
+
+                    input.googleAutocomplete = autocomplete;
 
                     google.maps.event.addListener(autocomplete, 'place_changed', onPlaceChange);
                     input.removeEventListener('keydown', onKeydown);
@@ -59,7 +62,6 @@
                     {% endif %}
 
                     var event = createEvent('place_changed');
-                    event.autocomplete = autocomplete;
                     input.dispatchEvent(event);
                 }
 

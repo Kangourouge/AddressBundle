@@ -12,7 +12,7 @@
 
             function onPlaceChange(event) {
                 event.preventDefault();
-                var googlePlace = event.autocomplete.getPlace();
+                var googlePlace = event.target.googleAutocomplete.getPlace();
 
                 var place = {};
                 place['address_components'] = googlePlace.address_components;
@@ -22,8 +22,6 @@
                 place['coordinate']['longitude'] = googlePlace.geometry.location.lng();
                 place['types'] = googlePlace.types;
                 place['vicinity'] = googlePlace.vicinity;
-
-                console.log(place);
 
                 placeInput.value = JSON.stringify(place);
             }
