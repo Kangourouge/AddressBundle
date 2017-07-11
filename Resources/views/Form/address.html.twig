@@ -71,6 +71,7 @@
                     var place = autocomplete.getPlace();
                     var components = place.address_components;
                     var value;
+
                     for (var field in mapping) {
                         if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
                             continue;

@@ -39,9 +39,11 @@
 
                     autocomplete = new google.maps.places.Autocomplete(input, options);
                     autocomplete.getAddressValue = function (addressType, addressFormat, components) {
-                        for (var i = 0; i < components.length; i++) {
-                            if (components[i].types[0] === addressType) {
-                                return components[i][addressFormat];
+                        if (components) {
+                            for (var i = 0; i < components.length; i++) {
+                                if (components[i].types[0] === addressType) {
+                                    return components[i][addressFormat];
+                                }
                             }
                         }
 
