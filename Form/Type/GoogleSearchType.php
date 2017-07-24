@@ -13,7 +13,14 @@ class GoogleSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('location', GooglePlaceType::class, $options)
+            ->add('location', GooglePlaceType::class, array(
+                'required'               => false,
+                'component_restrictions' => $options['component_restrictions'],
+                'types'                  => $options['types'],
+                'address_type'           => $options['address_type'],
+                'address_format'         => $options['address_format'],
+                'data'                   => isset($options['data']) ? $options['data'] : null,
+            ))
             ->add('place', HiddenType::class);
 
         $builder->addModelTransformer(new GooglePlaceTransformer());
@@ -21,15 +28,20 @@ class GoogleSearchType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
+        $resolver->setRequired(array('component_restrictions'));
         $resolver->setDefaults(array(
             'component_restrictions' => array('country' => array('fr', 'be')),
+            'location'               => null,
+            'address_type'           => null,
+            'address_format'         => 'long_name',
             'types'                  => array('geocode'),
-            'address_type'           => 'locality',
-            'address_format'         => 'short_name',
         ));
         $resolver->setAllowedTypes(array(
             'component_restrictions' => 'array',
             'types'                  => 'array',
+            'location'               => array('null', \Geocoder\Model\Coordinates::class),
             'address_type'           => array('null', 'string'),
             'address_format'         => 'string',
         ));
