@@ -109,4 +109,13 @@ class GooglePlaceModel
 
 		return $this->address;
 	}
+
+	public function getVicinity()
+    {
+        if (key_exists('vicinity', $this->data)) {
+            return $this->data['vicinity'];
+        }
+
+        return '';
+    }
 }
