@@ -14,7 +14,7 @@ class GoogleSearchType extends AbstractType
     {
         $builder
             ->add('location', GooglePlaceType::class, array(
-                'required'               => false,
+                'required'               => isset($options['required']) ? $options['required'] : false,
                 'component_restrictions' => $options['component_restrictions'],
                 'types'                  => $options['types'],
                 'address_type'           => $options['address_type'],
