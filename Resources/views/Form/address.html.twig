@@ -81,12 +81,16 @@
                                 }
                                 break;
                             case 'address1':
-                                value = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components);
-                                value = value + autocomplete.getAddressValue('street_number', 'short_name', components);
-                                if (value.length > 0) {
-                                    value = value + ', ';
+                                sublocality_level_1 = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components)
+                                if (sublocality_level_1) {
+                                    value = sublocality_level_1;
+                                } else {
+                                    value = autocomplete.getAddressValue('route', 'short_name', components);
+                                    street_number = autocomplete.getAddressValue('street_number', 'short_name', components);
+                                    if (street_number) {
+                                        value = street_number + ', ' + value;
+                                    }
                                 }
-                                value = value + autocomplete.getAddressValue('route', 'short_name', components);
                                 break;
                             case 'postalCode':
                                 value = autocomplete.getAddressValue('postal_code', 'short_name', components);
