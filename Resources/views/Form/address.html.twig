@@ -8,14 +8,11 @@
 
         <script type="text/javascript">
             (function () {
-
                 var address = document.getElementById('{{ form.vars.id }}');
-
                 var name = document.getElementById('{{ form.name.vars.id }}');
                 var address1 = document.getElementById('{{ form.address1.vars.id }}');
                 var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
                 var approximate = document.getElementById('{{ form.approximate.vars.id }}');
-
                 var mapping = {
                     address1: address1,
                     address2: document.getElementById('{{ form.address2.vars.id }}'),
@@ -26,14 +23,12 @@
                     latitude: document.getElementById('{{ form.latitude.vars.id }}'),
                     longitude: document.getElementById('{{ form.longitude.vars.id }}')
                 };
-
                 var fields = ['postalCode', 'city', 'department', 'region', 'latitude', 'longitude'];
 
                 function onPlaceChange(event) {
                     event.preventDefault();
 
                     var isApproximate = event.target === postalCode;
-
                     var _fields = isApproximate ? fields : [];
 
                     approximate.value = isApproximate ? 1 : 0;
@@ -86,7 +81,8 @@
                                 }
                                 break;
                             case 'address1':
-                                value = autocomplete.getAddressValue('street_number', 'short_name', components);
+                                value = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components);
+                                value = value + autocomplete.getAddressValue('street_number', 'short_name', components);
                                 if (value.length > 0) {
                                     value = value + ', ';
                                 }
@@ -119,7 +115,6 @@
                 address1.addEventListener('place_changed', onPlaceChange);
                 address1.addEventListener('keyup', onReset);
                 address1.addEventListener('reset', onReset);
-
                 postalCode.addEventListener('place_changed', onPlaceChange);
                 postalCode.addEventListener('keyup', onReset);
                 postalCode.addEventListener('reset', onReset);
