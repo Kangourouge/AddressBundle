@@ -2,7 +2,6 @@
 
 namespace KRG\AddressBundle\Model;
 
-use KRG\AddressBundle\Entity\Address;
 use KRG\AddressBundle\Entity\AddressInterface;
 use Ivory\GoogleMap\Base\Coordinate;
 

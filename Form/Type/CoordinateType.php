@@ -10,16 +10,17 @@ use Ivory\GoogleMap\Base\Coordinate;
 class CoordinateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {        
-        $builder->add('latitude', 'hidden')
-                ->add('longitude', 'hidden');
+    {
+        $builder
+            ->add('latitude', 'hidden')
+            ->add('longitude', 'hidden');
     }
 
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         $resolver->setDefaults(array(
-            'data_class' => Coordinate::class,
+            'data_class'   => Coordinate::class,
             'label_format' => 'form.tag.%name%',
         ));
-        
     }
 }

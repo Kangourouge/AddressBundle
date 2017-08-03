@@ -6,5 +6,4 @@ use KRG\AddressBundle\Entity\Address;
 
 class AddressModel extends Address
 {
-
 }

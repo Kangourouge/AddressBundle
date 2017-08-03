@@ -11,7 +11,6 @@ use Ivory\HttpAdapter\HttpAdapterInterface;
 
 class GoogleMaps extends BaseGoogleMaps
 {
-
     /**
      * @var string
      */
@@ -67,7 +66,7 @@ class GoogleMaps extends BaseGoogleMaps
      */
     private function executeQuery($query)
     {
-        $query   = $this->buildQuery($query);
+        $query = $this->buildQuery($query);
         $content = (string) $this->getAdapter()->get($query)->getBody();
 
         // Throw exception if invalid clientID and/or privateKey used with GoogleMapsBusinessProvider

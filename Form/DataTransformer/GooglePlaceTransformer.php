@@ -11,14 +11,14 @@ class GooglePlaceTransformer implements DataTransformerInterface
 	{
         if (!$value instanceof GooglePlaceModel){
 			return array(
-				'location' => null,
-				'place' => null
+                'location' => null,
+                'place'    => null,
 			);
 		}
 
 		return array(
 			'location' => $value->getFormattedAddress(),
-			'place' => json_encode($value->getData())
+            'place'    => json_encode($value->getData())
 		);
 
 	}

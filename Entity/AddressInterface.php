@@ -82,7 +82,7 @@ interface AddressInterface
 	 *
 	 * @param float $longitude
 	 *
-	 * @return Office
+	 * @return Address
 	 */
 	public function setLongitude($longitude);
 

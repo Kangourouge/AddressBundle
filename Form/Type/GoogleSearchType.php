@@ -2,6 +2,7 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
+use Geocoder\Model\Coordinates;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,7 +42,7 @@ class GoogleSearchType extends AbstractType
         $resolver->setAllowedTypes(array(
             'component_restrictions' => 'array',
             'types'                  => 'array',
-            'location'               => array('null', \Geocoder\Model\Coordinates::class),
+            'location'               => array('null', Coordinates::class),
             'address_type'           => array('null', 'string'),
             'address_format'         => 'string',
         ));

@@ -10,12 +10,12 @@ class ApiHelper extends BaseApiHelper
      * @var string
      */
     private $apiKey;
-    
+
     /**
      * @var array
      */
     private $libraries;
-    
+
     /**
      * @var string
      */
@@ -35,7 +35,6 @@ class ApiHelper extends BaseApiHelper
         $otherParameters = array();
 
         $otherParameters['libraries'] = implode(',', $this->libraries);
-
         $otherParameters['key'] = $this->apiKey;
         $otherParameters['language'] = $this->locale;
         $otherParameters['sensor'] = json_encode((bool) $sensor);
@@ -62,5 +61,4 @@ class ApiHelper extends BaseApiHelper
 
         return implode('', $output);
     }
-
 }

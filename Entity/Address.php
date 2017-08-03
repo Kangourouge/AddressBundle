@@ -258,7 +258,7 @@ abstract class Address implements AddressInterface
      *
      * @param float $longitude
      *
-     * @return Office
+     * @return Address
      */
     public function setLongitude($longitude)
     {
@@ -282,7 +282,7 @@ abstract class Address implements AddressInterface
      *
      * @param float $latitude
      *
-     * @return Office
+     * @return Address
      */
     public function setLatitude($latitude)
     {

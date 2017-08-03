@@ -30,30 +30,6 @@ class AddressType extends AbstractType
      */
     private $countryClass;
 
-    /**
-     * @param string $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-    }
-
-    /**
-     * @param string $addressClass
-     */
-    public function setAddressClass($addressClass)
-    {
-        $this->addressClass = $addressClass;
-    }
-
-    /**
-     * @param string $countryClass
-     */
-    public function setCountryClass($countryClass)
-    {
-        $this->countryClass = $countryClass;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -121,5 +97,29 @@ class AddressType extends AbstractType
     public function getName()
     {
         return 'address';
+    }
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
+    /**
+     * @param string $addressClass
+     */
+    public function setAddressClass($addressClass)
+    {
+        $this->addressClass = $addressClass;
+    }
+
+    /**
+     * @param string $countryClass
+     */
+    public function setCountryClass($countryClass)
+    {
+        $this->countryClass = $countryClass;
     }
 }
