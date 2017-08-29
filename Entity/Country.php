@@ -82,11 +82,11 @@ class Country implements CountryInterface
     /**
      * Set flag
      *
-     * @param FileInterface $flag
+     * @param FileInterface|null $flag
      *
      * @return Country
      */
-    public function setFlag(FileInterface $flag)
+    public function setFlag(FileInterface $flag = null)
     {
         $this->flag = $flag;
 
