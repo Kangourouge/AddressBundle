@@ -47,6 +47,7 @@ class AddressType extends AbstractType
             ))
             ->add('name', TextType::class, array(
                 'label' => false,
+                'required' => false,
                 'attr'  => array('placeholder' => 'form.address.name'),
             ))
             ->add('address1', GooglePlaceType::class, array(
