@@ -31,7 +31,7 @@ class Country implements CountryInterface
     protected $code;
 
     /**
-     * @ORM\OneToOne(targetEntity="File", cascade={"merge", "detach"})
+     * @ORM\OneToOne(targetEntity="File", cascade={"persist", "merge", "detach"})
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true)
      * @var FileInterface
      */
