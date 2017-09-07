@@ -45,22 +45,22 @@ abstract class Address implements AddressInterface
      */
     protected $city;
 
-	/**
-	 * @Assert\NotBlank
-	 * @ORM\Column(type="string", nullable=true)
-	 * @var string
-	 */
-	protected $department;
-
-	/**
-	 * @Assert\NotBlank
-	 * @ORM\Column(type="string", nullable=true)
-	 * @var string
-	 */
-	protected $region;
+    /**
+     * @Assert\NotBlank
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    protected $department;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Country", cascade={"merge", "detach"})
+     * @Assert\NotBlank
+     * @ORM\Column(type="string", nullable=true)
+     * @var string
+     */
+    protected $region;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\Country", cascade={"merge", "detach"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      * @var Country
      */
