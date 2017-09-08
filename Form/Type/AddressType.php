@@ -2,7 +2,9 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -30,6 +32,12 @@ class AddressType extends AbstractType
      */
     private $countryClass;
 
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
+        $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -41,14 +49,15 @@ class AddressType extends AbstractType
                     return array('data-code' => strtolower($country->getCode()));
                 },
                 'query_builder' => function (EntityRepository $repository) {
-                    return $repository->createQueryBuilder('c')
+                    return $repository
+                        ->createQueryBuilder('c')
                         ->orderBy('c.name');
                 }
             ))
             ->add('name', TextType::class, array(
-                'label' => false,
+                'label'    => false,
                 'required' => false,
-                'attr'  => array('placeholder' => 'form.address.name'),
+                'attr'     => array('placeholder' => 'form.address.name'),
             ))
             ->add('address1', GooglePlaceType::class, array(
                 'component_restrictions' => array('country' => $this->country),
@@ -106,21 +115,5 @@ class AddressType extends AbstractType
     public function setCountry($country)
     {
         $this->country = $country;
-    }
-
-    /**
-     * @param string $addressClass
-     */
-    public function setAddressClass($addressClass)
-    {
-        $this->addressClass = $addressClass;
-    }
-
-    /**
-     * @param string $countryClass
-     */
-    public function setCountryClass($countryClass)
-    {
-        $this->countryClass = $countryClass;
     }
 }

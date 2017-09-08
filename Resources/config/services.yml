@@ -1,20 +1,19 @@
 services:
-    emc.address.form.google_place:
+    krg.address.form.google_place:
         class: KRG\AddressBundle\Form\Type\GooglePlaceType
-        arguments: [@emc.address.ivory_google_map.helper.api, %emc_address.google_maps.api_key%, %locale%]
+        arguments: ['@krg.address.ivory_google_map.helper.api', '%krg_address.google_maps.api_key%', '%locale%']
         tags:
             - { name: form.type, alias: google_place }
 
-    emc.address.form.address:
+    krg.address.form.address:
         class: KRG\AddressBundle\Form\Type\AddressType
+        arguments: ['@doctrine.orm.entity_manager']
+        calls:
+            - [setCountry, ['%krg_address.google_maps.country%']]
         tags:
             - { name: form.type, alias: address }
-        calls:
-            - [setCountry, [%emc_address.google_maps.country%]]
-            - [setAddressClass, [%emc_address.address_class%]]
-            - [setCountryClass, [%emc_address.country_class%]]
 
-    emc.address.ivory_google_map.helper.api:
+    krg.address.ivory_google_map.helper.api:
         class: KRG\AddressBundle\Ivory\GoogleMap\Helper\ApiHelper
-        arguments: [%emc_address.google_maps.api_key%, ['places'], %locale%]
+        arguments: ['%krg_address.google_maps.api_key%', ['places'], '%locale%']
         public: false

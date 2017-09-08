@@ -60,7 +60,7 @@ abstract class Address implements AddressInterface
     protected $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\Country", cascade={"merge", "detach"})
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\CountryInterface", cascade={"merge", "detach"})
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      * @var Country
      */
@@ -96,6 +96,7 @@ abstract class Address implements AddressInterface
     public function __toString()
     {
         $address = sprintf("%s %s %s %s %s, %s", $this->name, $this->address1, $this->address2, $this->postalCode, $this->city, (string) $this->country);
+
         return (string)preg_replace('/[\ ][\ ]+|\n\n+/', ' ', trim($address));
     }
 

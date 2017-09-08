@@ -20,9 +20,7 @@ class KRGAddressExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->setParameter('emc_address.address_class', $config['address_class']);
-        $container->setParameter('emc_address.country_class', $config['country_class']);
-        $container->setParameter('emc_address.google_maps.api_key', $config['google_maps']['api_key']);
-        $container->setParameter('emc_address.google_maps.country', $config['google_maps']['country']);
+        $container->setParameter('krg_address.google_maps.api_key', $config['google_maps']['api_key']);
+        $container->setParameter('krg_address.google_maps.country', $config['google_maps']['country']);
     }
 }

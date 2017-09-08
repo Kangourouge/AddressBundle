@@ -17,8 +17,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('address_class')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('country_class')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('address_class')->end() // TODO: useless, remove it
+                ->scalarNode('country_class')->end() // TODO: useless, remove it
                 ->arrayNode('google_maps')
                     ->children()
                         ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
