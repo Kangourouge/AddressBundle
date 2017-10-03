@@ -2,7 +2,7 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
-use Geocoder\Model\Coordinates;
+use KRG\AddressBundle\Model\CoordinatesModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,20 +31,19 @@ class GoogleSearchType extends AbstractType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setRequired(array('component_restrictions'));
-        $resolver->setDefaults(array(
-            'component_restrictions' => array('country' => array('fr', 'be')),
-            'location'               => null,
-            'address_type'           => null,
-            'address_format'         => 'long_name',
-            'types'                  => array('geocode'),
-        ));
-        $resolver->setAllowedTypes(array(
-            'component_restrictions' => 'array',
-            'types'                  => 'array',
-            'location'               => array('null', Coordinates::class),
-            'address_type'           => array('null', 'string'),
-            'address_format'         => 'string',
-        ));
+        $resolver
+            ->setRequired(array('component_restrictions'))
+            ->setDefaults(array(
+                'component_restrictions' => array('country' => array('fr', 'be')),
+                'location'               => null,
+                'address_type'           => null,
+                'address_format'         => 'long_name',
+                'types'                  => array('geocode'),
+            ))
+            ->setAllowedType('component_restrictions', 'array')
+            ->setAllowedType('types', 'array')
+            ->setAllowedType('location', array('null', CoordinatesModel::class))
+            ->setAllowedType('address_type', array('null', 'string'))
+            ->setAllowedType('address_format', 'string');
     }
 }

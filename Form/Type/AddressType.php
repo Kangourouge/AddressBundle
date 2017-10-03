@@ -2,7 +2,7 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
@@ -20,11 +20,6 @@ class AddressType extends AbstractType
     /**
      * @var string
      */
-    private $country;
-
-    /**
-     * @var string
-     */
     private $addressClass;
 
     /**
@@ -32,9 +27,8 @@ class AddressType extends AbstractType
      */
     private $countryClass;
 
-    public function __construct(EntityManager $entityManager, $country)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->country = $country;
         $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
         $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
     }
@@ -45,7 +39,7 @@ class AddressType extends AbstractType
             ->add('country', EntityType::class, array(
                 'class'         => $this->countryClass,
                 'label'         => false,
-                'attr'          => array('placeholder' => 'form.address.country'),
+                'attr'          => array('placeholder' => 'form.address.country', 'data-sonata-select2' => 'false'),
                 'choice_attr'   => function (CountryInterface $country, $key, $index) {
                     return array('data-code' => strtolower($country->getCode()));
                 },
@@ -61,10 +55,8 @@ class AddressType extends AbstractType
                 'attr'     => array('placeholder' => 'form.address.name'),
             ))
             ->add('address1', GooglePlaceType::class, array(
-                'component_restrictions' => array('country' => $this->country),
-                'types'                  => array(),
-                'label'                  => false,
-                'attr'                   => array('placeholder' => 'form.address.address1'),
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.address1'),
             ))
             ->add('address2', TextType::class, array(
                 'required' => false,
@@ -72,10 +64,9 @@ class AddressType extends AbstractType
                 'attr'     => array('placeholder' => 'form.address.address2'),
             ))
             ->add('postalCode', GooglePlaceType::class, array(
-                'component_restrictions' => array('country' => $this->country),
-                'types'                  => array('(regions)'),
-                'label'                  => false,
-                'attr'                   => array('placeholder' => 'form.address.postalCode'),
+                'types' => array('(regions)'),
+                'label' => false,
+                'attr'  => array('placeholder' => 'form.address.postalCode'),
             ))
             ->add('city', TextType::class, array(
                 'label' => false,
@@ -103,10 +94,5 @@ class AddressType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => $this->addressClass,
         ));
-    }
-
-    public function getName()
-    {
-        return 'address';
     }
 }

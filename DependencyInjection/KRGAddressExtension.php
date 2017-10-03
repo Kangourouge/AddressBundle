@@ -21,6 +21,5 @@ class KRGAddressExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('krg_address.google_maps.api_key', $config['google_maps']['api_key']);
-        $container->setParameter('krg_address.google_maps.country', $config['google_maps']['country']);
     }
 }

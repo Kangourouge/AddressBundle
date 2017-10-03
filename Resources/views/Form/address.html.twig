@@ -1,13 +1,16 @@
 {% block address_widget %}
     {% spaceless %}
         {% set attr = attr|merge({'autocomplete':'off'}) %}
+
         {{ block('form_widget_compound') }}
+
         <p class="text text-warning address-approximate hide">
-            {{ "approximative"|trans() }}
+            {{ 'approximative'|trans() }}
         </p>
 
         <script type="text/javascript">
             (function () {
+                var fields = ['postalCode', 'address1', 'address2', 'city', 'department', 'region', 'latitude', 'longitude'];
                 var address = document.getElementById('{{ form.vars.id }}');
                 var name = document.getElementById('{{ form.name.vars.id }}');
                 var address1 = document.getElementById('{{ form.address1.vars.id }}');
@@ -23,14 +26,12 @@
                     latitude: document.getElementById('{{ form.latitude.vars.id }}'),
                     longitude: document.getElementById('{{ form.longitude.vars.id }}')
                 };
-                var fields = ['postalCode', 'city', 'department', 'region', 'latitude', 'longitude'];
 
                 function onPlaceChange(event) {
-                    event.preventDefault();
-
                     var isApproximate = event.target === postalCode;
                     var _fields = isApproximate ? fields : [];
 
+                    event.preventDefault();
                     approximate.value = isApproximate ? 1 : 0;
                     if (isApproximate) {
                         address.nextElementSibling.classList.remove('hide');
@@ -41,21 +42,28 @@
                 }
 
                 function onReset(event) {
-                    event.preventDefault();
                     var _fields = event.target === postalCode ? fields : [];
+
+                    event.preventDefault();
                     reset(event.target, _fields);
                 }
 
-                function reset(element, fields) {
+                function onResetAll(element, fields) {
+                    return reset(element, fields, true);
+                }
+
+                function reset(element, fields, force) {
                     for (var field in mapping) {
-                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
-                            continue;
-                        }
-                        if (mapping[field] === element) {
-                            continue;
-                        }
-                        if(field === 'name') {
-                            continue;
+                        if (force !== true) {
+                            if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
+                                continue;
+                            }
+                            if (mapping[field] === element) {
+                                continue;
+                            }
+                            if (field === 'name') {
+                                continue;
+                            }
                         }
                         mapping[field].value = '';
                         mapping[field].setAttribute('value', '');
@@ -118,10 +126,10 @@
 
                 address1.addEventListener('place_changed', onPlaceChange);
                 address1.addEventListener('keyup', onReset);
-                address1.addEventListener('reset', onReset);
+                address1.addEventListener('reset', onResetAll);
                 postalCode.addEventListener('place_changed', onPlaceChange);
                 postalCode.addEventListener('keyup', onReset);
-                postalCode.addEventListener('reset', onReset);
+                postalCode.addEventListener('reset', onResetAll);
             })();
         </script>
     {% endspaceless %}

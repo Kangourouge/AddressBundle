@@ -3,7 +3,6 @@
 namespace KRG\AddressBundle\Model;
 
 use KRG\AddressBundle\Entity\AddressInterface;
-use Ivory\GoogleMap\Base\Coordinate;
 
 class GooglePlaceModel
 {
@@ -65,11 +64,7 @@ class GooglePlaceModel
 	    $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
         $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
-		$coordinate = new Coordinate();
-		$coordinate->setLatitude($latitude);
-		$coordinate->setLongitude($longitude);
-
-		return $coordinate;
+		return new CoordinatesModel($latitude, $longitude);
 	}
 
 	private function getProperty($property, $name)

@@ -1,25 +1,13 @@
 services:
-    krg.address.form.type.google_place:
-        class: KRG\AddressBundle\Form\Type\GooglePlaceType
-        arguments:
-            - '@krg.address.ivory_google_map.helper.api'
-            - '%krg_address.google_maps.api_key%'
-            - '%locale%'
-        tags:
-            - { name: form.type, alias: google_place }
+    KRG\AddressBundle\Helper\ApiHelper:
+        - '%krg_address.google_maps.api_key%'
+        - ['places']
+        - '%locale%'
 
-    krg.address.form.type.address:
-        class: KRG\AddressBundle\Form\Type\AddressType
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '%krg_address.google_maps.country%'
-        tags:
-            - { name: form.type }
+    KRG\AddressBundle\Form\Type\GooglePlaceType:
+        autowire: true
+        tags: [form.type]
 
-    krg.address.ivory_google_map.helper.api:
-        class: KRG\AddressBundle\Ivory\GoogleMap\Helper\ApiHelper
-        arguments:
-            - '%krg_address.google_maps.api_key%'
-            - ['places']
-            - '%locale%'
-        public: false
+    KRG\AddressBundle\Form\Type\AddressType:
+        autowire: true
+        tags: [form.type]

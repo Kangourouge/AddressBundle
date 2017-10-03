@@ -3,13 +3,13 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ivory\GoogleMap\Base\Coordinate;
+use KRG\AddressBundle\Model\CoordinatesModel;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Address implements AddressInterface
+class Address implements AddressInterface
 {
     /**
      * @ORM\Id
@@ -95,7 +95,13 @@ abstract class Address implements AddressInterface
 
     public function __toString()
     {
-        $address = sprintf("%s %s %s %s %s, %s", $this->name, $this->address1, $this->address2, $this->postalCode, $this->city, (string) $this->country);
+        $address = sprintf("%s %s %s %s %s, %s",
+            $this->name,
+            $this->address1,
+            $this->address2,
+            $this->postalCode,
+            $this->city,
+            (string)$this->country);
 
         return (string)preg_replace('/[\ ][\ ]+|\n\n+/', ' ', trim($address));
     }
@@ -350,48 +356,46 @@ abstract class Address implements AddressInterface
         return $this->approximate;
     }
 
-	/**
-	 * @return string
-	 */
-	public function getDepartment()
-	{
-		return $this->department;
-	}
+    /**
+     * @return string
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
 
-	/**
-	 * @param string $department
-	 * @return $this
-	 */
-	public function setDepartment($department)
-	{
-		$this->department = $department;
-		return $this;
-	}
+    /**
+     * @param string $department
+     * @return $this
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department;
 
-	/**
-	 * @return string
-	 */
-	public function getRegion()
-	{
-		return $this->region;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $region
-	 * @return $this
-	 */
-	public function setRegion($region)
-	{
-		$this->region = $region;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getRegion()
+    {
+        return $this->region;
+    }
 
-	public function getCoordinate(){
-		$coordinate = new Coordinate();
+    /**
+     * @param string $region
+     * @return $this
+     */
+    public function setRegion($region)
+    {
+        $this->region = $region;
 
-		$coordinate->setLatitude($this->getLatitude());
-		$coordinate->setLongitude($this->getLongitude());
+        return $this;
+    }
 
-		return $coordinate;
-	}
+    public function getCoordinate()
+    {
+        return new CoordinatesModel($this->getLatitude(), $this->getLongitude());
+    }
 }

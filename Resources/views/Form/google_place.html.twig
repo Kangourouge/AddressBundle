@@ -11,21 +11,19 @@
         <script type="text/javascript">
             (function () {
                 var input = document.getElementById('{{ form.vars.id }}');
-                var country, passed, options = {{ options|json_encode()|raw }}, autocomplete = null;
+                var options = {{ options|json_encode()|raw }};
+                var country = null;
+                var autocomplete = null;
 
-                if (typeof(input.dataset.country) === "string") {
+                if (typeof(input.dataset.country) === 'string') {
                     country = document.getElementById(input.dataset.country);
                     if (country !== null) {
                         country.addEventListener('change', function (event) {
-                            if (autocomplete === null) {
-                                return;
+                            if (autocomplete !== null) {
+                                google.maps.event.clearListeners(autocomplete, 'place_changed');
+                                input.addEventListener('keydown', onKeydown);
+                                input.dispatchEvent(createEvent('reset'));
                             }
-
-                            google.maps.event.clearListeners(autocomplete, 'place_changed');
-                            input.addEventListener('keydown', onKeydown);
-
-                            var event = createEvent('reset');
-                            input.dispatchEvent(event);
                         });
                     }
                 }
@@ -34,6 +32,9 @@
 
                 function onKeydown(event) {
                     if (country instanceof HTMLElement) {
+                        if (options.componentRestrictions === undefined) {
+                            options.componentRestrictions = [];
+                        }
                         options.componentRestrictions['country'] = country.options[country.selectedIndex].getAttribute('data-code');
                     }
 
@@ -51,7 +52,6 @@
                     };
 
                     input.googleAutocomplete = autocomplete;
-
                     google.maps.event.addListener(autocomplete, 'place_changed', onPlaceChange);
                     input.removeEventListener('keydown', onKeydown);
                 }
@@ -63,8 +63,7 @@
                     input.setAttribute('value', autocomplete.getAddressValue('{{ address_type }}', '{{ address_format }}', components));
                     {% endif %}
 
-                    var event = createEvent('place_changed');
-                    input.dispatchEvent(event);
+                    input.dispatchEvent(createEvent('place_changed'));
                 }
 
                 function createEvent(name) {

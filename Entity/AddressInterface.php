@@ -2,7 +2,7 @@
 
 namespace KRG\AddressBundle\Entity;
 
-use Ivory\GoogleMap\Base\Coordinate;
+use KRG\AddressBundle\Model\CoordinatesModel;
 
 interface AddressInterface
 {
@@ -162,7 +162,7 @@ interface AddressInterface
 	public function setRegion($region);
 
 	/**
-	 * @return Coordinate
+	 * @return CoordinatesModel
 	 */
 	public function getCoordinate();
 }

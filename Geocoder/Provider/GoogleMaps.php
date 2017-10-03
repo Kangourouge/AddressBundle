@@ -9,6 +9,12 @@ use Geocoder\Exception\QuotaExceeded;
 use Geocoder\Provider\GoogleMaps as BaseGoogleMaps;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 
+// TODO: update to 5 https://github.com/geocoder-php/BazingaGeocoderBundle
+
+/**
+ * Class GoogleMaps
+ * @package KRG\AddressBundle\Geocoder\Provider
+ */
 class GoogleMaps extends BaseGoogleMaps
 {
     /**
@@ -42,9 +48,6 @@ class GoogleMaps extends BaseGoogleMaps
         $this->apiKey = $apiKey;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function search($address)
     {
         // Google API returns invalid data if IP address given
@@ -61,9 +64,6 @@ class GoogleMaps extends BaseGoogleMaps
         return $this->executeQuery($query);
     }
 
-    /**
-     * @param string $query
-     */
     private function executeQuery($query)
     {
         $query = $this->buildQuery($query);
