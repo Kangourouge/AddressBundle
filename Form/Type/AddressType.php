@@ -32,8 +32,9 @@ class AddressType extends AbstractType
      */
     private $countryClass;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, $country)
     {
+        $this->country = $country;
         $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
         $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
     }
@@ -107,13 +108,5 @@ class AddressType extends AbstractType
     public function getName()
     {
         return 'address';
-    }
-
-    /**
-     * @param string $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
     }
 }
