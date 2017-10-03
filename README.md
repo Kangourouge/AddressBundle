@@ -30,8 +30,7 @@ Configuration
 
 krg_address:
     google_maps:
-        api_key: %google_maps_api_key%
-        country: fr,ch,it,be,es
+        api_key: '%google_maps_api_key%'
 
 doctrine:
     orm:
