@@ -7,109 +7,116 @@ use Ivory\GoogleMap\Base\Coordinate;
 
 class GooglePlaceModel
 {
-	/**
-	 * @var array
-	 */
-	private $data;
+    /**
+     * @var array
+     */
+    private $data;
 
-	/**
-	 * @var array
-	 */
-	private $normalizedData;
+    /**
+     * @var array
+     */
+    private $normalizedData;
 
-	/**
-	 * @var AddressInterface
-	 */
-	private $address;
+    /**
+     * @var AddressInterface
+     */
+    private $address;
 
-	function __construct(array $data)
-	{
-		$this->data = $data;
-	}
+    function __construct(array $data)
+    {
+        $this->data = $data;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getData()
-	{
-		return $this->data;
-	}
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 
-	public function getFormattedAddress()
-	{
-		return $this->data['formatted_address'];
-	}
+    public function getFormattedAddress()
+    {
+        return isset($this->data['formatted_address']) ? $this->data['formatted_address'] : '';
+    }
 
-	public function getType()
-	{
-		$this->data['types'][0];
+    public function getType()
+    {
+        if (isset($this->data['types'][0])) {
+            switch ($this->data['types'][0]) {
+                case 'street_address':
+                case 'route':
+                case 'postal_code':
+                case 'neighborhood':
+                    return 'coordinate';
+                case 'locality':
+                    return 'city';
+                case 'administrative_area_level_2':
+                    return 'department';
+                case 'administrative_area_level_1':
+                    return 'region';
+            }
+        }
 
-		switch ($this->data['types'][0]){
-			case 'street_address':
-			case 'route':
-            case 'postal_code':
-            case 'neighborhood':
-				return 'coordinate';
-			case 'locality':
-				return 'city';
-			case 'administrative_area_level_2':
-				return 'department';
-			case 'administrative_area_level_1':
-				return 'region';
-		}
-		return null;
-	}
+        return null;
+    }
 
-	public function getCoordinate()
-	{
-	    $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
-        $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
+    public function getCoordinate()
+    {
+        if (isset($this->data['coordinate'])) {
+            $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
+            $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
-		$coordinate = new Coordinate();
-		$coordinate->setLatitude($latitude);
-		$coordinate->setLongitude($longitude);
+            $coordinate = new Coordinate();
+            $coordinate->setLatitude($latitude);
+            $coordinate->setLongitude($longitude);
 
-		return $coordinate;
-	}
+            return $coordinate;
+        }
 
-	private function getProperty($property, $name)
-	{
-		if (!isset($this->normalizedData[$property])) {
-			$this->normalizedData[$property] = array();
-		} else if (isset($this->normalizedData[$property][$name])) {
-			return $this->normalizedData[$property][$name];
-		}
+        return null;
+    }
 
-		foreach ($this->data['address_components'] as $component) {
-			if ($component['types'][0] == $property) {
-				return $this->normalizedData[$property][$name] = $component[$name];
-			}
-		}
+    private function getProperty($property, $name)
+    {
+        if (!isset($this->normalizedData[$property])) {
+            $this->normalizedData[$property] = array();
+        } else if (isset($this->normalizedData[$property][$name])) {
+            return $this->normalizedData[$property][$name];
+        }
 
-		return $this->normalizedData[$property][$name] = null;
-	}
+        if (isset($this->data['address_components'])) {
+            foreach ($this->data['address_components'] as $component) {
+                if ($component['types'][0] == $property) {
+                    return $this->normalizedData[$property][$name] = $component[$name];
+                }
+            }
+        }
 
-	public function getAddress()
-	{
-		if ($this->address instanceof AddressInterface) {
-			return $this->address;
-		}
+        return $this->normalizedData[$property][$name] = null;
+    }
 
-		$this->address = new AddressModel();
-		$this->address->setCity($this->getProperty('locality', 'long_name'));
-		$this->address->setRegion($this->getProperty('administrative_area_level_1', 'long_name'));
-		$this->address->setDepartment($this->getProperty('administrative_area_level_2', 'long_name'));
-		$this->address->setPostalCode($this->getProperty('postal_code', 'long_name'));
+    public function getAddress()
+    {
+        if ($this->address instanceof AddressInterface) {
+            return $this->address;
+        }
 
-		$this->address->setAddress1($this->getProperty('route', 'long_name'));
+        $this->address = new AddressModel();
+        $this->address->setCity($this->getProperty('locality', 'long_name'));
+        $this->address->setRegion($this->getProperty('administrative_area_level_1', 'long_name'));
+        $this->address->setDepartment($this->getProperty('administrative_area_level_2', 'long_name'));
+        $this->address->setPostalCode($this->getProperty('postal_code', 'long_name'));
+
+        $this->address->setAddress1($this->getProperty('route', 'long_name'));
         if ($this->getProperty('street_number', 'long_name') !== null) {
             $this->address->setAddress1($this->getProperty('street_number', 'long_name').' '.$this->getProperty('route', 'long_name'));
         }
 
-		return $this->address;
-	}
+        return $this->address;
+    }
 
-	public function getVicinity()
+    public function getVicinity()
     {
         if (key_exists('vicinity', $this->data)) {
             return $this->data['vicinity'];

@@ -6,29 +6,63 @@
             var locationInput = document.getElementById('{{ form.location.vars.id }}');
             var placeInput = document.getElementById('{{ form.place.vars.id }}');
 
-            locationInput.addEventListener('place_changed', onPlaceChange);
             locationInput.addEventListener('keyup', onReset);
             locationInput.addEventListener('reset', onReset);
+            locationInput.addEventListener('keydown', onKeyDown);
+            locationInput.addEventListener('place_changed', onPlaceChange);
 
             function onPlaceChange(event) {
-                event.preventDefault();
-                var googlePlace = event.target.googleAutocomplete.getPlace();
+                fillPlaceInput(event.target.googleAutocomplete.getPlace());
+            }
 
-                var place = {};
-                place['address_components'] = googlePlace.address_components;
-                place['formatted_address'] = googlePlace.formatted_address;
-                place['coordinate'] = {};
-                place['coordinate']['latitude'] = googlePlace.geometry.location.lat();
-                place['coordinate']['longitude'] = googlePlace.geometry.location.lng();
-                place['types'] = googlePlace.types;
-                place['vicinity'] = googlePlace.vicinity;
-
-                placeInput.value = JSON.stringify(place);
+            function onKeyDown(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    searchPlaces();
+                }
             }
 
             function onReset(event) {
-                event.preventDefault();
-                placeInput.value = '';
+                if (event.keyCode != 13) {
+                    event.preventDefault();
+                    placeInput.value = '';
+                }
+            }
+
+            function searchPlaces() {
+                var results = document.getElementsByClassName('pac-item');
+                if (results === 'undefined') {
+                    return false;
+                }
+                var firstResult = document.getElementsByClassName('pac-item')[0].childNodes;
+                var placeName = firstResult[1].textContent;
+                var placeAddress = firstResult[2].textContent;
+                var geocoder = new google.maps.Geocoder();
+
+                geocoder.geocode({'address': placeName + ' ' + placeAddress}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            fillPlaceInput(results[0]);
+                            locationInput.value = results[0].formatted_address;
+                        }
+                    }
+                });
+            }
+
+            function fillPlaceInput(data) {
+                var place = {};
+
+                place['address_components'] = data.address_components;
+                place['formatted_address'] = data.formatted_address;
+                place['coordinate'] = {};
+                if (data.geometry) {
+                    place['coordinate']['latitude'] = data.geometry.location.lat();
+                    place['coordinate']['longitude'] = data.geometry.location.lng();
+                }
+                place['types'] = data.types;
+                place['vicinity'] = data.vicinity;
+
+                placeInput.value = JSON.stringify(place);
             }
         })();
     </script>
