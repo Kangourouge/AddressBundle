@@ -38,55 +38,68 @@ class AddressType extends AbstractType
         $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
     }
 
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('country', EntityType::class, array(
+            ->add('country', EntityType::class, [
                 'class'         => $this->countryClass,
                 'label'         => false,
-                'attr'          => array('placeholder' => 'form.address.country'),
+                'attr'          => ['placeholder' => 'form.address.country'],
                 'choice_attr'   => function (CountryInterface $country, $key, $index) {
-                    return array('data-code' => strtolower($country->getCode()));
+                    return ['data-code' => strtolower($country->getCode())];
                 },
                 'query_builder' => function (EntityRepository $repository) {
-                    return $repository
-                        ->createQueryBuilder('c')
-                        ->orderBy('c.name');
+                    return $repository->createQueryBuilder('c')->orderBy('c.name');
                 }
-            ))
-            ->add('name', TextType::class, array(
+            ])
+            ->add('name', TextType::class, [
                 'label'    => false,
                 'required' => false,
-                'attr'     => array('placeholder' => 'form.address.name'),
-            ))
-            ->add('address1', GooglePlaceType::class, array(
-                'component_restrictions' => array('country' => $this->country),
-                'types'                  => array(),
+                'attr'     => [
+                    'placeholder' => 'form.address.name'
+                ],
+            ])
+            ->add('address1', GooglePlaceType::class, [
+                'component_restrictions' => ['country' => $this->country],
+                'types'                  => [],
                 'label'                  => false,
-                'attr'                   => array('placeholder' => 'form.address.address1'),
-            ))
-            ->add('address2', TextType::class, array(
+                'attr'                   => [
+                    'placeholder' => 'form.address.address1',
+                ],
+            ])
+            ->add('address2', TextType::class, [
                 'required' => false,
                 'label'    => false,
-                'attr'     => array('placeholder' => 'form.address.address2'),
-            ))
-            ->add('postalCode', GooglePlaceType::class, array(
-                'component_restrictions' => array('country' => $this->country),
-                'types'                  => array('(regions)'),
+                'attr'     => [
+                    'placeholder' => 'form.address.address2'
+                ],
+            ])
+            ->add('postalCode', GooglePlaceType::class, [
+                'component_restrictions' => ['country' => $this->country],
+                'types'                  => ['(regions)'],
                 'label'                  => false,
-                'attr'                   => array('placeholder' => 'form.address.postalCode'),
-            ))
-            ->add('city', TextType::class, array(
+                'attr'                   => [
+                    'placeholder' => 'form.address.postalCode'
+                ],
+            ])
+            ->add('city', TextType::class, [
                 'label' => false,
-                'attr'  => array('placeholder' => 'form.address.city'),
-            ))
+                'attr'  => [
+                    'placeholder' => 'form.address.city'
+                ],
+            ])
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)
             ->add('department', HiddenType::class)
             ->add('region', HiddenType::class)
-            ->add('approximate', HiddenType::class, array(
+            ->add('approximate', HiddenType::class, [
                 'empty_data' => true
-            ));
+            ]);
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
@@ -99,21 +112,13 @@ class AddressType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => $this->addressClass,
-        ));
+        ]);
     }
 
     public function getName()
     {
         return 'address';
-    }
-
-    /**
-     * @param string $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
     }
 }

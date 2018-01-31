@@ -10,4 +10,4 @@ form:
         department: Department
         region: Region
 
-approximative: The address's geolocation is approximative.
+approximative: The address's geolocation is approximative. Please precision your location by dragging the marker.

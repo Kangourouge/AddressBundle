@@ -37,39 +37,44 @@ class GooglePlaceModel
 
 	public function getFormattedAddress()
 	{
-		return $this->data['formatted_address'];
+		return isset($this->data['formatted_address']) ? $this->data['formatted_address'] : '';
 	}
 
 	public function getType()
 	{
-		$this->data['types'][0];
+        if (isset($this->data['types'][0])) {
+            switch ($this->data['types'][0]) {
+                case 'street_address':
+                case 'route':
+                case 'postal_code':
+                case 'neighborhood':
+                    return 'coordinate';
+                case 'locality':
+                    return 'city';
+                case 'administrative_area_level_2':
+                    return 'department';
+                case 'administrative_area_level_1':
+                    return 'region';
+            }
+        }
 
-		switch ($this->data['types'][0]){
-			case 'street_address':
-			case 'route':
-            case 'postal_code':
-            case 'neighborhood':
-				return 'coordinate';
-			case 'locality':
-				return 'city';
-			case 'administrative_area_level_2':
-				return 'department';
-			case 'administrative_area_level_1':
-				return 'region';
-		}
-		return null;
+        return null;
 	}
 
 	public function getCoordinate()
 	{
-	    $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
-        $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
+	    if (isset($this->data['coordinate'])) {
+            $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
+            $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
-		$coordinate = new Coordinate();
-		$coordinate->setLatitude($latitude);
-		$coordinate->setLongitude($longitude);
+            $coordinate = new Coordinate();
+            $coordinate->setLatitude($latitude);
+            $coordinate->setLongitude($longitude);
 
-		return $coordinate;
+            return $coordinate;
+        }
+
+        return null;
 	}
 
 	private function getProperty($property, $name)
@@ -80,11 +85,13 @@ class GooglePlaceModel
 			return $this->normalizedData[$property][$name];
 		}
 
-		foreach ($this->data['address_components'] as $component) {
-			if ($component['types'][0] == $property) {
-				return $this->normalizedData[$property][$name] = $component[$name];
-			}
-		}
+		if (isset($this->data['address_components'])) {
+            foreach ($this->data['address_components'] as $component) {
+                if ($component['types'][0] == $property) {
+                    return $this->normalizedData[$property][$name] = $component[$name];
+                }
+            }
+        }
 
 		return $this->normalizedData[$property][$name] = null;
 	}

@@ -4,82 +4,40 @@
 
         {{ block('form_widget_simple') }}
 
-        {% if api is not null %}
-            {{ api|raw }}
-        {% endif %}
-
-        <script type="text/javascript">
+        <script>
             (function () {
                 var input = document.getElementById('{{ form.vars.id }}');
-                var country, passed, options = {{ options|json_encode()|raw }}, autocomplete = null;
+                var options = {{ options|json_encode()|raw }};
+                var autocomplete;
 
-                if (typeof(input.dataset.country) === "string") {
-                    country = document.getElementById(input.dataset.country);
-                    if (country !== null) {
+                input.addEventListener('keydown', init);
+
+                function init(event) {
+                    if (event.target.dataset.country) {
+                        var country = document.getElementById(input.dataset.country);
+                        options.componentRestrictions['country'] = country.options[country.selectedIndex].getAttribute('data-code');
                         country.addEventListener('change', function (event) {
-                            if (autocomplete === null) {
-                                return;
-                            }
-
+                            {# Reinitiliaze Google Autocomplete on country update #}
                             google.maps.event.clearListeners(autocomplete, 'place_changed');
-                            input.addEventListener('keydown', onKeydown);
-
-                            var event = createEvent('reset');
-                            input.dispatchEvent(event);
+                            input.addEventListener('keydown', init);
+                            input.dispatchEvent(new Event('reset'));
                         });
                     }
-                }
 
-                input.addEventListener('keydown', onKeydown);
-
-                function onKeydown(event) {
-                    if (country instanceof HTMLElement) {
-                        options.componentRestrictions['country'] = country.options[country.selectedIndex].getAttribute('data-code');
-                    }
-
-                    autocomplete = new google.maps.places.Autocomplete(input, options);
-                    autocomplete.getAddressValue = function (addressType, addressFormat, components) {
-                        if (components) {
-                            for (var i = 0; i < components.length; i++) {
-                                if (components[i].types[0] === addressType) {
-                                    return components[i][addressFormat];
-                                }
-                            }
-                        }
-
-                        return '';
-                    };
-
-                    input.googleAutocomplete = autocomplete;
-
-                    google.maps.event.addListener(autocomplete, 'place_changed', onPlaceChange);
-                    input.removeEventListener('keydown', onKeydown);
+                    autocomplete = new google.maps.places.Autocomplete(event.target, options);
+                    autocomplete.addListener('place_changed', onPlaceChange);
+                    event.target.removeEventListener('keydown', init); // Only once
                 }
 
                 function onPlaceChange(event) {
-                    {% if address_type is not null %}
-                    var place = autocomplete.getPlace();
-                    var components = place.address_components;
-                    input.setAttribute('value', autocomplete.getAddressValue('{{ address_type }}', '{{ address_format }}', components));
-                    {% endif %}
-
-                    var event = createEvent('place_changed');
-                    input.dispatchEvent(event);
-                }
-
-                function createEvent(name) {
-                    var event;
-
-                    try {
-                        event = new CustomEvent(name);
-                    } catch (e) {
-                        event = document.createEvent('CustomEvent');
-                        event.initEvent(name, true, true);
-                    }
-
-                    return event;
+                    input.autocompleteData = autocomplete;
+                    input.dispatchEvent(new Event('place_changed'));
                 }
             })();
         </script>
+
+        {% if api is defined and api is not null %}
+            {{ api|raw }}
+        {% endif %}
     {% endspaceless %}
 {% endblock %}

@@ -1,127 +1,142 @@
 {% block address_widget %}
     {% spaceless %}
-        {% set attr = attr|merge({'autocomplete':'off'}) %}
+        {% set attr = attr|merge({'autocomplete':'false'}) %}
+
         {{ block('form_widget_compound') }}
-        <p class="text text-warning address-approximate hide">
-            {{ "approximative"|trans() }}
-        </p>
+
+        <div class="hide">
+            <p class="text text-warning address-approximate">{{ 'approximative'|trans() }}</p>
+            <div id="map_{{ form.vars.id }}" style="width:100%;"></div>
+        </div>
 
         <script type="text/javascript">
             (function () {
                 var address = document.getElementById('{{ form.vars.id }}');
-                var name = document.getElementById('{{ form.name.vars.id }}');
-                var address1 = document.getElementById('{{ form.address1.vars.id }}');
-                var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
-                var approximate = document.getElementById('{{ form.approximate.vars.id }}');
-                var mapping = {
-                    address1: address1,
-                    address2: document.getElementById('{{ form.address2.vars.id }}'),
-                    postalCode: postalCode,
-                    city: document.getElementById('{{ form.city.vars.id }}'),
-                    department: document.getElementById('{{ form.department.vars.id }}'),
-                    region: document.getElementById('{{ form.region.vars.id }}'),
-                    latitude: document.getElementById('{{ form.latitude.vars.id }}'),
-                    longitude: document.getElementById('{{ form.longitude.vars.id }}')
+                var map;
+                var fields = {
+                    address1:    '{{ form.address1.vars.id }}',
+                    address2:    '{{ form.address2.vars.id }}',
+                    postalCode:  '{{ form.postalCode.vars.id }}',
+                    city:        '{{ form.city.vars.id }}',
+                    latitude:    '{{ form.latitude.vars.id }}',
+                    longitude:   '{{ form.longitude.vars.id }}',
+                    department:  '{{ form.department.vars.id }}',
+                    region:      '{{ form.region.vars.id }}',
+                    approximate: '{{ form.approximate.vars.id }}',
                 };
-                var fields = ['postalCode', 'city', 'department', 'region', 'latitude', 'longitude'];
+
+                document.getElementById(fields.address1).addEventListener('place_changed', onPlaceChange);
+                document.getElementById(fields.address1).addEventListener('keyDown', handleKeys);
+                document.getElementById(fields.address1).addEventListener('reset', reset);
+                document.getElementById(fields.postalCode).addEventListener('place_changed', onPlaceChange);
+                document.getElementById(fields.postalCode).addEventListener('keyDown', handleKeys);
+                document.getElementById(fields.postalCode).addEventListener('reset', reset);
 
                 function onPlaceChange(event) {
-                    event.preventDefault();
+                    var isApproximate = event.target.id === fields.postalCode;
 
-                    var isApproximate = event.target === postalCode;
-                    var _fields = isApproximate ? fields : [];
+                    for (var field in fields) {
+                        if (isApproximate) {
+                            if ('address1' === field) {
+                                continue; {# Keep address on postalCode update #}
+                            }
+                        }
 
-                    approximate.value = isApproximate ? 1 : 0;
+                        document.getElementById(fields[field]).value = handleComponentValue(field, event.target.autocompleteData, isApproximate);
+                    }
+
+                    handleApproximate(isApproximate, event.target.autocompleteData)
+                }
+
+                function handleApproximate(isApproximate) {
+                    document.getElementById(fields.approximate).value = isApproximate;
+                    address.nextElementSibling.classList.toggle('hide', !isApproximate);
+
                     if (isApproximate) {
-                        address.nextElementSibling.classList.remove('hide');
-                    } else {
-                        address.nextElementSibling.classList.add('hide');
-                    }
-                    update(event.target.googleAutocomplete, _fields);
-                }
+                        var mapEl = document.getElementById('map_{{ form.vars.id }}');
+                        var latitude = document.getElementById(fields.latitude).value;
+                        var longitude = document.getElementById(fields.longitude).value;
 
-                function onReset(event) {
-                    event.preventDefault();
-                    var _fields = event.target === postalCode ? fields : [];
-                    reset(event.target, _fields);
-                }
+                        map = new google.maps.Map(mapEl, {
+                            zoom: 13,
+                            center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
+                        });
 
-                function reset(element, fields) {
-                    for (var field in mapping) {
-                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
-                            continue;
-                        }
-                        if (mapping[field] === element) {
-                            continue;
-                        }
-                        if(field === 'name') {
-                            continue;
-                        }
-                        mapping[field].value = '';
-                        mapping[field].setAttribute('value', '');
+                        mapEl.style.height = '200px';
+
+                        marker = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            animation: google.maps.Animation.DROP,
+                            position: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
+                        });
+
+                        google.maps.event.addListener(marker, 'dragend', function (event) {
+                            document.getElementById(fields.latitude).value = this.getPosition().lat();
+                            document.getElementById(fields.longitude).value = this.getPosition().lng();
+                        });
                     }
                 }
 
-                function update(autocomplete, fields) {
+                function handleComponentValue(field, autocomplete, isApproximate) {
                     var place = autocomplete.getPlace();
                     var components = place.address_components;
-                    var value;
+                    var value = '';
 
-                    for (var field in mapping) {
-                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
-                            continue;
-                        }
-                        value = '';
-                        switch(field) {
-                            case 'name':
-                                if (place.types[0] !== 'street_address' && place.name) {
-                                    value = place.name;
-                                } else {
-                                    value = mapping[field].value;
+                    switch (field) {
+                        case 'address1':
+                            sublocality_level_1 = extractComponentValue('sublocality_level_1', 'short_name', components);
+                            if (sublocality_level_1) {
+                                value = sublocality_level_1;
+                            } else {
+                                value = extractComponentValue('route', 'short_name', components);
+                                street_number = extractComponentValue('street_number', 'short_name', components);
+
+                                if (street_number) {
+                                    value = street_number + ', ' + value;
                                 }
-                                break;
-                            case 'address1':
-                                sublocality_level_1 = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components)
-                                if (sublocality_level_1) {
-                                    value = sublocality_level_1;
-                                } else {
-                                    value = autocomplete.getAddressValue('route', 'short_name', components);
-                                    street_number = autocomplete.getAddressValue('street_number', 'short_name', components);
-                                    if (street_number) {
-                                        value = street_number + ', ' + value;
-                                    }
-                                }
-                                break;
-                            case 'postalCode':
-                                value = autocomplete.getAddressValue('postal_code', 'short_name', components);
-                                break;
-                            case 'city':
-                                value = autocomplete.getAddressValue('locality', 'short_name', components);
-                                break;
-                            case 'department':
-                                value = autocomplete.getAddressValue('administrative_area_level_2', 'long_name', components);
-                                break;
-                            case 'region':
-                                value = autocomplete.getAddressValue('administrative_area_level_1', 'long_name', components);
-                                break;
-                            case 'latitude':
-                                value = place.geometry.location.lat();
-                                break;
-                            case 'longitude':
-                                value = place.geometry.location.lng();
-                                break;
+                            }
+                            return value;
+                        case 'postalCode':
+                            return extractComponentValue('postal_code', 'short_name', components);
+                        case 'city':
+                            return extractComponentValue('locality', 'short_name', components);
+                        case 'department':
+                            return extractComponentValue('administrative_area_level_2', 'long_name', components);
+                        case 'region':
+                            return extractComponentValue('administrative_area_level_1', 'long_name', components);
+                        case 'latitude':
+                            return place.geometry ? place.geometry.location.lat() : 0;
+                        case 'longitude':
+                            return place.geometry ? place.geometry.location.lng() : 0;
+                    }
+
+                    return value;
+                }
+
+                function extractComponentValue(addressType, addressFormat, components) {
+                    if (components) {
+                        for (var i = 0; i < components.length; i++) {
+                            if (components[i].types[0] === addressType) {
+                                return components[i][addressFormat];
+                            }
                         }
-                        mapping[field].value = value;
-                        mapping[field].setAttribute('value', value);
+                    }
+
+                    return '';
+                }
+
+                function handleKeys(event) {
+                    if (event.keyCode === 13) { {# Ignore ENTER press #}
+                        event.preventDefault();
                     }
                 }
 
-                address1.addEventListener('place_changed', onPlaceChange);
-                address1.addEventListener('keyup', onReset);
-                address1.addEventListener('reset', onReset);
-                postalCode.addEventListener('place_changed', onPlaceChange);
-                postalCode.addEventListener('keyup', onReset);
-                postalCode.addEventListener('reset', onReset);
+                function reset(event) {
+                    for (var field in fields) {
+                        document.getElementById(fields[field]).value = ''
+                    }
+                }
             })();
         </script>
     {% endspaceless %}

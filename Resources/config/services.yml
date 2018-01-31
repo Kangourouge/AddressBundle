@@ -1,11 +1,11 @@
 services:
-    krg.address.form.google_place:
+    KRG\AddressBundle\Form\Type\GooglePlaceType:
         class: KRG\AddressBundle\Form\Type\GooglePlaceType
-        arguments: ['@krg.address.ivory_google_map.helper.api', '%krg_address.google_maps.api_key%', '%locale%']
+        arguments: ['@KRG\AddressBundle\Helper\ApiHelper', '%krg_address.google_maps.api_key%', '%locale%']
         tags:
             - { name: form.type, alias: google_place }
 
-    krg.address.form.address:
+    KRG\AddressBundle\Form\Type\AddressType:
         class: KRG\AddressBundle\Form\Type\AddressType
         arguments: ['@doctrine.orm.entity_manager']
         calls:
@@ -13,7 +13,7 @@ services:
         tags:
             - { name: form.type, alias: address }
 
-    krg.address.ivory_google_map.helper.api:
-        class: KRG\AddressBundle\Ivory\GoogleMap\Helper\ApiHelper
+    KRG\AddressBundle\Helper\ApiHelper:
+        class: KRG\AddressBundle\Helper\ApiHelper
         arguments: ['%krg_address.google_maps.api_key%', ['places'], '%locale%']
         public: false
