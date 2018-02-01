@@ -4,7 +4,7 @@
 
         {{ block('form_widget_compound') }}
 
-        <div class="hide">
+        <div style="display: none;">
             <p class="text text-warning address-approximate">{{ 'approximative'|trans() }}</p>
             <div id="map_{{ form.vars.id }}" style="width:100%;"></div>
         </div>
@@ -50,7 +50,7 @@
 
                 function handleApproximate(isApproximate) {
                     document.getElementById(fields.approximate).value = isApproximate;
-                    address.nextElementSibling.classList.toggle('hide', !isApproximate);
+                    address.nextElementSibling.style.display = isApproximate ? '' : 'none';
 
                     if (isApproximate) {
                         var mapEl = document.getElementById('map_{{ form.vars.id }}');

@@ -47,8 +47,6 @@ class GoogleMaps extends BaseGoogleMaps
      */
     public function search($address)
     {
-        // Google API returns invalid data if IP address given
-        // This API doesn't handle IPs
         if (filter_var($address, FILTER_VALIDATE_IP)) {
             throw new UnsupportedOperation('The GoogleMaps provider does not support IP addresses, only street addresses.');
         }
@@ -94,12 +92,11 @@ class GoogleMaps extends BaseGoogleMaps
                 $query, $json['error_message']));
         }
 
-        // you are over your quota
         if ('OVER_QUERY_LIMIT' === $json['status']) {
             throw new QuotaExceeded(sprintf('Daily quota exceeded %s', $query));
         }
 
-        // no result
+        // No result
         if (!isset($json['results']) || !count($json['results']) || 'OK' !== $json['status']) {
             throw new NoResult(sprintf('Could not execute query "%s".', $query));
         }

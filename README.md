@@ -38,6 +38,12 @@ doctrine:
         resolve_target_entities:
             KRG\AddressBundle\Entity\AddressInterface: AppBundle\Entity\Address
             KRG\AddressBundle\Entity\CountryInterface: AppBundle\Entity\Country
+            
+twig:
+    form_themes:
+        - 'KRGAddressBundle:Form:google_place.html.twig'
+        - 'KRGAddressBundle:Form:google_search.html.twig'
+        - 'KRGAddressBundle:Form:address.html.twig'
 ```
 
 Entity

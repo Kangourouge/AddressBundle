@@ -8,29 +8,56 @@
 
             inputLocation.addEventListener('place_changed', onPlaceChange);
             inputLocation.addEventListener('keydown', handleKeys);
+            inputLocation.addEventListener('keyup', handleKeys);
 
             function onPlaceChange(event) {
-                event.preventDefault();
-                var autocomplete = event.target.autocompleteData;
-                var place = autocomplete.getPlace();
-                var data = {};
+                fillInput(event.target.autocompleteData.getPlace());
+            }
 
-                data['address_components'] = place.address_components;
-                data['formatted_address'] = place.formatted_address;
-                data['coordinate'] = {};
-                if (place.geometry) {
-                    data['coordinate']['latitude'] = place.geometry.location.lat();
-                    data['coordinate']['longitude'] = place.geometry.location.lng();
+            function fillInput(data) {
+                var place = {};
+
+                place['address_components'] = data.address_components;
+                place['formatted_address'] = data.formatted_address;
+                place['coordinate'] = {};
+                if (data.geometry) {
+                    place['coordinate']['latitude'] = data.geometry.location.lat();
+                    place['coordinate']['longitude'] = data.geometry.location.lng();
                 }
-                data['types'] = place.types;
-                data['vicinity'] = place.vicinity;
-                inputPlace.value = JSON.stringify(data);
+                place['types'] = data.types;
+                place['vicinity'] = data.vicinity;
+                inputPlace.value = JSON.stringify(place);
+            }
+
+            {# Select first available place #}
+            function searchPlaces() {
+                var results = document.getElementsByClassName('pac-item');
+                if (results === 'undefined') {
+                    return false;
+                }
+                var firstResult = document.getElementsByClassName('pac-item')[0].childNodes;
+                var placeName = firstResult[1].textContent;
+                var placeAddress = firstResult[2].textContent;
+                var geocoder = new google.maps.Geocoder();
+
+                geocoder.geocode({'address': placeName + ' ' + placeAddress}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            fillInput(results[0]);
+                            inputLocation.value = results[0].formatted_address;
+                        }
+                    }
+                });
             }
 
             function handleKeys(event) {
-                if (event.keyCode === 13) { {# Ignore ENTER press #}
+                if (event.keyCode === 13) {
                     event.preventDefault();
+
+                    return searchPlaces();
                 }
+
+                inputPlace.value = '';
             }
         })();
     </script>

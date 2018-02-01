@@ -27,9 +27,6 @@ class GooglePlaceModel
 		$this->data = $data;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getData()
 	{
 		return $this->data;
@@ -79,12 +76,11 @@ class GooglePlaceModel
 
 	private function getProperty($property, $name)
 	{
-		if (!isset($this->normalizedData[$property])) {
-			$this->normalizedData[$property] = array();
-		} else if (isset($this->normalizedData[$property][$name])) {
-			return $this->normalizedData[$property][$name];
-		}
+        if (isset($this->normalizedData[$property][$name])) {
+            return $this->normalizedData[$property][$name];
+        }
 
+        $this->normalizedData[$property] = [];
 		if (isset($this->data['address_components'])) {
             foreach ($this->data['address_components'] as $component) {
                 if ($component['types'][0] == $property) {
@@ -107,8 +103,8 @@ class GooglePlaceModel
 		$this->address->setRegion($this->getProperty('administrative_area_level_1', 'long_name'));
 		$this->address->setDepartment($this->getProperty('administrative_area_level_2', 'long_name'));
 		$this->address->setPostalCode($this->getProperty('postal_code', 'long_name'));
-
 		$this->address->setAddress1($this->getProperty('route', 'long_name'));
+
         if ($this->getProperty('street_number', 'long_name') !== null) {
             $this->address->setAddress1($this->getProperty('street_number', 'long_name').' '.$this->getProperty('route', 'long_name'));
         }

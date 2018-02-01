@@ -7,7 +7,7 @@ class ApiHelper
     /**
      * @var string
      */
-    private $key;
+    private $apiKey;
 
     /**
      * @var array
@@ -24,9 +24,9 @@ class ApiHelper
      */
     private $loaded;
 
-    function __construct($key, array $libraries, $locale)
+    function __construct($apiKey, array $libraries, $locale)
     {
-        $this->key = $key;
+        $this->apiKey = $apiKey;
         $this->locale = $locale;
         $this->libraries = $libraries;
     }
@@ -35,7 +35,7 @@ class ApiHelper
     {
         $libraries = implode(',', $this->libraries);
         $sensor = json_encode((bool) $sensor);
-        $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>', $this->key, $libraries, $callback);
+        $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>', $this->apiKey, $libraries, $callback);
         $this->loaded = true;
 
         return $output;

@@ -35,12 +35,10 @@ class GooglePlaceType extends TextType
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        parent::buildView($view, $form, $options);
-
-        $view->vars['options'] = array(
+        $view->vars['options'] = [
             'types'                 => $options['types'],
             'componentRestrictions' => $options['component_restrictions'],
-        );
+        ];
         $view->vars['address_type'] = $options['address_type'];
         $view->vars['address_format'] = $options['address_format'];
         $view->vars['api'] = true !== $this->apiHelper->isLoaded() ? $this->apiHelper->render($this->locale, [], '') : null;
@@ -48,21 +46,20 @@ class GooglePlaceType extends TextType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
-
         $resolver->setRequired(['component_restrictions', 'types']);
+
         $resolver->setDefaults([
             'location'       => null,
             'address_type'   => null,
             'address_format' => 'long_name',
         ]);
-        $resolver->setAllowedTypes([
-            'component_restrictions' => 'array',
-            'types'                  => 'array',
-            'location'               => ['null', Coordinates::class],
-            'address_type'           => ['null', 'string'],
-            'address_format'         => 'string',
-        ]);
+
+        $resolver
+            ->setAllowedTypes('component_restrictions', 'array')
+            ->setAllowedTypes('types', 'array')
+            ->setAllowedTypes('location', ['null', Coordinates::class])
+            ->setAllowedTypes('address_type', ['null', 'string'])
+            ->setAllowedTypes('address_format', 'string');
     }
 
     public function getBlockPrefix()

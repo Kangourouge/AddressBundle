@@ -1,19 +1,19 @@
 services:
-    KRG\AddressBundle\Form\Type\GooglePlaceType:
-        class: KRG\AddressBundle\Form\Type\GooglePlaceType
-        arguments: ['@KRG\AddressBundle\Helper\ApiHelper', '%krg_address.google_maps.api_key%', '%locale%']
-        tags:
-            - { name: form.type, alias: google_place }
-
-    KRG\AddressBundle\Form\Type\AddressType:
-        class: KRG\AddressBundle\Form\Type\AddressType
-        arguments: ['@doctrine.orm.entity_manager']
-        calls:
-            - [setCountry, ['%krg_address.google_maps.country%']]
-        tags:
-            - { name: form.type, alias: address }
-
-    KRG\AddressBundle\Helper\ApiHelper:
-        class: KRG\AddressBundle\Helper\ApiHelper
-        arguments: ['%krg_address.google_maps.api_key%', ['places'], '%locale%']
+    _defaults:
+        autowire: true
+        autoconfigure: true
         public: false
+        bind:
+            $apiKey: '%krg_address.google_maps.api_key%'
+            $locale: '%locale%'
+            $country: '%krg_address.google_maps.country%'
+            $libraries: ['places']
+
+    KRG\AddressBundle\Form\Type\:
+        resource: '../../Form/Type'
+        public: true
+        tags:
+            - { name: form.type }
+
+    KRG\AddressBundle\Helper\:
+        resource: '../../Helper'

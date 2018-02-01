@@ -14,14 +14,14 @@ class GoogleSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('location', GooglePlaceType::class, array(
+            ->add('location', GooglePlaceType::class, [
                 'required'               => isset($options['required']) ? $options['required'] : false,
                 'component_restrictions' => $options['component_restrictions'],
                 'types'                  => $options['types'],
                 'address_type'           => $options['address_type'],
                 'address_format'         => $options['address_format'],
                 'data'                   => isset($options['data']) ? $options['data'] : null,
-            ))
+            ])
             ->add('place', HiddenType::class);
 
         $builder->addModelTransformer(new GooglePlaceTransformer());
@@ -29,22 +29,21 @@ class GoogleSearchType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
+        $resolver->setRequired(['component_restrictions']);
 
-        $resolver->setRequired(array('component_restrictions'));
-        $resolver->setDefaults(array(
-            'component_restrictions' => array('country' => array('fr', 'be')),
+        $resolver->setDefaults([
+            'component_restrictions' => ['country' => ['fr']],
             'location'               => null,
             'address_type'           => null,
             'address_format'         => 'long_name',
-            'types'                  => array('geocode'),
-        ));
-        $resolver->setAllowedTypes(array(
-            'component_restrictions' => 'array',
-            'types'                  => 'array',
-            'location'               => array('null', Coordinates::class),
-            'address_type'           => array('null', 'string'),
-            'address_format'         => 'string',
-        ));
+            'types'                  => ['geocode'],
+        ]);
+
+        $resolver
+            ->setAllowedTypes('component_restrictions', 'array')
+            ->setAllowedTypes('types', 'array')
+            ->setAllowedTypes('location', ['null', Coordinates::class])
+            ->setAllowedTypes('address_type', ['null', 'string'])
+            ->setAllowedTypes('address_format', 'string');
     }
 }
