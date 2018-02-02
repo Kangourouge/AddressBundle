@@ -74,6 +74,7 @@
                         google.maps.event.addListener(marker, 'dragend', function (event) {
                             document.getElementById(fields.latitude).value = this.getPosition().lat();
                             document.getElementById(fields.longitude).value = this.getPosition().lng();
+                            approximate.value = 0;
                         });
                     }
                 }
