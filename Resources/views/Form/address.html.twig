@@ -1,10 +1,13 @@
 {% block address_widget %}
     {% spaceless %}
         {% set attr = attr|merge({'autocomplete':'off'}) %}
+
         {{ block('form_widget_compound') }}
-        <p class="text text-warning address-approximate hide">
-            {{ "approximative"|trans() }}
-        </p>
+
+        <div style="display: none;">
+            <p class="text text-warning address-approximate">{{ 'approximative'|trans() }}</p>
+            <div id="map_{{ form.vars.id }}" class="krg_address_map" style="width:100%;"></div>
+        </div>
 
         <script type="text/javascript">
             (function () {
@@ -38,6 +41,33 @@
                         address.nextElementSibling.classList.add('hide');
                     }
                     update(event.target.googleAutocomplete, _fields);
+                    handleApproximate(isApproximate, event.target.googleAutocomplete)
+                }
+
+                function handleApproximate(isApproximate) {
+                    address.nextElementSibling.style.display = isApproximate ? '' : 'none';
+                    if (isApproximate) {
+                        var mapEl = document.getElementById('map_{{ form.vars.id }}');
+                        var latitude = mapping['latitude'];
+                        var longitude = mapping['longitude'];
+
+                        map = new google.maps.Map(mapEl, {
+                            zoom: 13,
+                            center: {lat: parseFloat(mapping['latitude'].value), lng: parseFloat(mapping['longitude'].value)}
+                        });
+                        mapEl.style.height = '200px';
+                        marker = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            animation: google.maps.Animation.DROP,
+                            position: {lat: parseFloat(mapping['latitude'].value), lng: parseFloat(mapping['longitude'].value)}
+                        });
+                        google.maps.event.addListener(marker, 'dragend', function (event) {
+                            mapping['latitude'].value = this.getPosition().lat();
+                            mapping['longitude'].value = this.getPosition().lng();
+                            approximate.value = 0;
+                        });
+                    }
                 }
 
                 function onReset(event) {
