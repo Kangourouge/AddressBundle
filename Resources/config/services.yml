@@ -6,11 +6,11 @@ services:
         bind:
             $apiKey: '%krg_address.google_maps.api_key%'
             $locale: '%locale%'
-            $country: '%krg_address.google_maps.country%'
+            $countries: '%krg_address.google_maps.countries%'
             $libraries: ['places']
 
-    KRG\AddressBundle\Form\Type\:
-        resource: '../../Form/Type'
+    KRG\AddressBundle\Form\:
+        resource: '../../Form'
         public: true
         tags:
             - { name: form.type }

@@ -1,12 +1,12 @@
 form:
     address:
         address: Votre adresse
+        location: Adresse
         name: Raison sociale/Dénomination
         address1: Adresse ligne 1
         address2: Adresse ligne 2
         postalCode: Code Postal
         city: Ville
         country: Pays
-        department: Departement
 
 approximative: La géolocalisation de cette adresse est approximative. Veuillez précisez vos coordonnées en déplaçant le marqueur.

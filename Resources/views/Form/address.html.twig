@@ -1,144 +1,146 @@
 {% block address_widget %}
-    {% spaceless %}
-        {% set attr = attr|merge({'autocomplete':'false'}) %}
+    {% set attr = attr|merge({'autocomplete':'false'}) %}
 
-        {{ block('form_widget_compound') }}
+    {{ block('form_widget_compound') }}
 
+    {% block map %}
         <div style="display: none;">
             <p class="text text-warning address-approximate">{{ 'approximative'|trans() }}</p>
             <div id="map_{{ form.vars.id }}" style="width:100%;"></div>
         </div>
+    {% endblock %}
 
-        <script type="text/javascript">
-            (function () {
-                var address = document.getElementById('{{ form.vars.id }}');
-                var map;
-                var fields = {
-                    address1:    '{{ form.address1.vars.id }}',
-                    address2:    '{{ form.address2.vars.id }}',
-                    postalCode:  '{{ form.postalCode.vars.id }}',
-                    city:        '{{ form.city.vars.id }}',
-                    latitude:    '{{ form.latitude.vars.id }}',
-                    longitude:   '{{ form.longitude.vars.id }}',
-                    department:  '{{ form.department.vars.id }}',
-                    region:      '{{ form.region.vars.id }}',
-                    approximate: '{{ form.approximate.vars.id }}',
-                };
+    <script type="text/javascript">
+        (function () {
+            var address = document.getElementById('{{ form.vars.id }}');
+            var map;
+            var inputs = {
+                address1:    document.getElementById('{{ form.address1.vars.id }}'),
+                address2:    document.getElementById('{{ form.address2.vars.id }}'),
+                postalCode:  document.getElementById('{{ form.postalCode.vars.id }}'),
+                city:        document.getElementById('{{ form.city.vars.id }}'),
+                latitude:    document.getElementById('{{ form.latitude.vars.id }}'),
+                longitude:   document.getElementById('{{ form.longitude.vars.id }}'),
+                department:  document.getElementById('{{ form.department.vars.id }}'),
+                region:      document.getElementById('{{ form.region.vars.id }}'),
+                approximate: document.getElementById('{{ form.approximate.vars.id }}'),
+            };
 
-                document.getElementById(fields.address1).addEventListener('place_changed', onPlaceChange);
-                document.getElementById(fields.address1).addEventListener('keyDown', handleKeys);
-                document.getElementById(fields.address1).addEventListener('reset', reset);
-                document.getElementById(fields.postalCode).addEventListener('place_changed', onPlaceChange);
-                document.getElementById(fields.postalCode).addEventListener('keyDown', handleKeys);
-                document.getElementById(fields.postalCode).addEventListener('reset', reset);
+            inputs.address1.addEventListener('place_changed', onPlaceChange);
+            inputs.address1.addEventListener('keyDown', handleKeys);
+            inputs.address1.addEventListener('reset', reset);
+            inputs.postalCode.addEventListener('place_changed', onPlaceChange);
+            inputs.postalCode.addEventListener('keyDown', handleKeys);
+            inputs.postalCode.addEventListener('reset', reset);
 
-                function onPlaceChange(event) {
-                    var isApproximate = event.target.id === fields.postalCode;
+            function onPlaceChange(event) {
+                var isApproximate = event.target === inputs.postalCode;
 
-                    for (var field in fields) {
-                        if (isApproximate) {
-                            if ('address1' === field) {
-                                continue; {# Keep address on postalCode update #}
-                            }
-                        }
-
-                        document.getElementById(fields[field]).value = handleComponentValue(field, event.target.autocompleteData, isApproximate);
-                    }
-
-                    handleApproximate(isApproximate, event.target.autocompleteData)
-                }
-
-                function handleApproximate(isApproximate) {
-                    document.getElementById(fields.approximate).value = isApproximate;
-                    address.nextElementSibling.style.display = isApproximate ? '' : 'none';
-
+                for (var field in inputs) {
                     if (isApproximate) {
-                        var mapEl = document.getElementById('map_{{ form.vars.id }}');
-                        var latitude = document.getElementById(fields.latitude).value;
-                        var longitude = document.getElementById(fields.longitude).value;
-
-                        map = new google.maps.Map(mapEl, {
-                            zoom: 13,
-                            center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
-                        });
-
-                        mapEl.style.height = '200px';
-
-                        marker = new google.maps.Marker({
-                            map: map,
-                            draggable: true,
-                            animation: google.maps.Animation.DROP,
-                            position: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
-                        });
-
-                        google.maps.event.addListener(marker, 'dragend', function (event) {
-                            document.getElementById(fields.latitude).value = this.getPosition().lat();
-                            document.getElementById(fields.longitude).value = this.getPosition().lng();
-                            approximate.value = 0;
-                        });
-                    }
-                }
-
-                function handleComponentValue(field, autocomplete, isApproximate) {
-                    var place = autocomplete.getPlace();
-                    var components = place.address_components;
-                    var value = '';
-
-                    switch (field) {
-                        case 'address1':
-                            sublocality_level_1 = extractComponentValue('sublocality_level_1', 'short_name', components);
-                            if (sublocality_level_1) {
-                                value = sublocality_level_1;
-                            } else {
-                                value = extractComponentValue('route', 'short_name', components);
-                                street_number = extractComponentValue('street_number', 'short_name', components);
-
-                                if (street_number) {
-                                    value = street_number + ', ' + value;
-                                }
-                            }
-                            return value;
-                        case 'postalCode':
-                            return extractComponentValue('postal_code', 'short_name', components);
-                        case 'city':
-                            return extractComponentValue('locality', 'short_name', components);
-                        case 'department':
-                            return extractComponentValue('administrative_area_level_2', 'long_name', components);
-                        case 'region':
-                            return extractComponentValue('administrative_area_level_1', 'long_name', components);
-                        case 'latitude':
-                            return place.geometry ? place.geometry.location.lat() : 0;
-                        case 'longitude':
-                            return place.geometry ? place.geometry.location.lng() : 0;
-                    }
-
-                    return value;
-                }
-
-                function extractComponentValue(addressType, addressFormat, components) {
-                    if (components) {
-                        for (var i = 0; i < components.length; i++) {
-                            if (components[i].types[0] === addressType) {
-                                return components[i][addressFormat];
-                            }
+                        if ('address1' === field) {
+                            continue; {# Keep address on postalCode update #}
                         }
                     }
 
-                    return '';
+                    inputs[field].value = handleComponentValue(field, event.target.autocompleteData, isApproximate);
                 }
 
-                function handleKeys(event) {
-                    if (event.keyCode === 13) { {# Ignore ENTER press #}
-                        event.preventDefault();
+                handleApproximate(isApproximate, event.target.autocompleteData)
+            }
+
+            function handleApproximate(isApproximate) {
+                inputs.approximate.value = isApproximate;
+                address.nextElementSibling.style.display = isApproximate ? '' : 'none';
+
+                console.log(isApproximate);
+
+                if (isApproximate) {
+                    var mapEl = document.getElementById('map_{{ form.vars.id }}');
+                    var latitude = inputs.latitude.value;
+                    var longitude = inputs.longitude.value;
+
+                    map = new google.maps.Map(mapEl, {
+                        zoom: 13,
+                        center: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
+                    });
+
+                    mapEl.style.height = '200px';
+
+                    marker = new google.maps.Marker({
+                        map: map,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP,
+                        position: {lat: parseFloat(latitude), lng: parseFloat(longitude)}
+                    });
+
+                    google.maps.event.addListener(marker, 'dragend', function (event) {
+                        inputs.latitude.value = this.getPosition().lat();
+                        inputs.longitude.value = this.getPosition().lng();
+                        approximate.value = 0;
+                    });
+                }
+            }
+
+            function handleComponentValue(field, autocomplete, isApproximate) {
+                var place = autocomplete.getPlace();
+                var components = place.address_components;
+                var value = '';
+
+                switch (field) {
+                    case 'address1':
+                        sublocality_level_1 = extractComponentValue('sublocality_level_1', 'short_name', components);
+                        if (sublocality_level_1) {
+                            value = sublocality_level_1;
+                        } else {
+                            value = extractComponentValue('route', 'short_name', components);
+                            street_number = extractComponentValue('street_number', 'short_name', components);
+
+                            if (street_number) {
+                                value = street_number + ', ' + value;
+                            }
+                        }
+                        return value;
+                    case 'postalCode':
+                        return extractComponentValue('postal_code', 'short_name', components);
+                    case 'city':
+                        return extractComponentValue('locality', 'short_name', components);
+                    case 'department':
+                        return extractComponentValue('administrative_area_level_2', 'long_name', components);
+                    case 'region':
+                        return extractComponentValue('administrative_area_level_1', 'long_name', components);
+                    case 'latitude':
+                        return place.geometry ? place.geometry.location.lat() : 0;
+                    case 'longitude':
+                        return place.geometry ? place.geometry.location.lng() : 0;
+                }
+
+                return value;
+            }
+
+            function extractComponentValue(addressType, addressFormat, components) {
+                if (components) {
+                    for (var i = 0; i < components.length; i++) {
+                        if (components[i].types[0] === addressType) {
+                            return components[i][addressFormat];
+                        }
                     }
                 }
 
-                function reset(event) {
-                    for (var field in fields) {
-                        document.getElementById(fields[field]).value = ''
-                    }
+                return '';
+            }
+
+            function handleKeys(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
                 }
-            })();
-        </script>
-    {% endspaceless %}
+            }
+
+            function reset(event) {
+                for (var field in inputs) {
+                    inputs[field].value = ''
+                }
+            }
+        })();
+    </script>
 {% endblock %}

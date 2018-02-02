@@ -3,8 +3,8 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use EMC\FileinputBundle\Entity\FileInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -31,7 +31,7 @@ class Country implements CountryInterface
     protected $code;
 
     /**
-     * @ORM\OneToOne(targetEntity="File", cascade={"persist", "merge", "detach"})
+     * @ORM\OneToOne(targetEntity="EMC\FileinputBundle\Entity\FileInterface", cascade={"persist", "merge", "detach"})
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true)
      * @var FileInterface
      */

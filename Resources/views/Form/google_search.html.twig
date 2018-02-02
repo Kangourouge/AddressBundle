@@ -1,36 +1,38 @@
 {% block google_search_widget %}
+    {% set attr = attr|merge({autocomplete:'off'}) %}
+
     {{ block('form_widget') }}
 
     <script type="text/javascript">
         (function(){
-            var inputLocation = document.getElementById('{{ form.location.vars.id }}');
-            var inputPlace = document.getElementById('{{ form.place.vars.id }}');
-
-            inputLocation.addEventListener('place_changed', onPlaceChange);
-            inputLocation.addEventListener('keydown', handleKeys);
-            inputLocation.addEventListener('keyup', handleKeys);
+            var inputs = {
+                location: document.getElementById('{{ form.location.vars.id }}'),
+                place: document.getElementById('{{ form.place.vars.id }}'),
+            };
 
             function onPlaceChange(event) {
-                fillInput(event.target.autocompleteData.getPlace());
+                inputs.place.value = prepareData(event.target.autocompleteData.getPlace());
             }
 
-            function fillInput(data) {
-                var place = {};
+            function prepareData(data) {
+                var place = {
+                    address_components: data.address_components,
+                    formatted_address: data.formatted_address,
+                    address_components: data.address_components,
+                    address_components: data.address_components,
+                    address_components: data.address_components,
+                    coordinate: {
+                        latitude: data.geometry ? data.geometry.location.lat() : 0,
+                        longitude: data.geometry ? data.geometry.location.lng() : 0
+                    },
+                    types: data.types,
+                    vicinity: data.vicinity
+                };
 
-                place['address_components'] = data.address_components;
-                place['formatted_address'] = data.formatted_address;
-                place['coordinate'] = {};
-                if (data.geometry) {
-                    place['coordinate']['latitude'] = data.geometry.location.lat();
-                    place['coordinate']['longitude'] = data.geometry.location.lng();
-                }
-                place['types'] = data.types;
-                place['vicinity'] = data.vicinity;
-                inputPlace.value = JSON.stringify(place);
+                return JSON.stringify(place);
             }
 
-            {# Select first available place #}
-            function searchPlaces() {
+            function putFirstPlace() {
                 var results = document.getElementsByClassName('pac-item');
                 if (results === 'undefined') {
                     return false;
@@ -43,22 +45,35 @@
                 geocoder.geocode({'address': placeName + ' ' + placeAddress}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         if (results[0]) {
-                            fillInput(results[0]);
-                            inputLocation.value = results[0].formatted_address;
+                            inputs.location.value = results[0].formatted_address;
+                            inputs.place.value = prepareData(results[0]);
                         }
+
+                        return results;
                     }
                 });
+
+                return false;
             }
 
             function handleKeys(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
 
-                    return searchPlaces();
+                    return putFirstPlace();
                 }
 
-                inputPlace.value = '';
+                reset();
             }
+
+            function reset(event) {
+                inputs.place.value = '';
+            }
+
+            inputs.location.addEventListener('place_changed', onPlaceChange);
+            inputs.location.addEventListener('keydown', handleKeys);
+            inputs.location.addEventListener('keyup', handleKeys);
+            inputs.location.addEventListener('reset', reset);
         })();
     </script>
 {% endblock %}

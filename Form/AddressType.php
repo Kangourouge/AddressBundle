@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form\Type;
+namespace KRG\AddressBundle\Form;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -20,7 +20,7 @@ class AddressType extends AbstractType
     /**
      * @var string
      */
-    private $country;
+    private $countries;
 
     /**
      * @var string
@@ -32,11 +32,11 @@ class AddressType extends AbstractType
      */
     private $countryClass;
 
-    public function __construct(EntityManager $entityManager, $country)
+    public function __construct(EntityManager $entityManager, $countries)
     {
         $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
         $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
-        $this->country = $country;
+        $this->countries = $countries;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -63,7 +63,7 @@ class AddressType extends AbstractType
                 ],
             ])
             ->add('address1', GooglePlaceType::class, [
-                'component_restrictions' => ['country' => $this->country],
+                'component_restrictions' => ['country' => $this->countries],
                 'types'                  => [],
                 'label'                  => false,
                 'attr'                   => [
@@ -78,7 +78,7 @@ class AddressType extends AbstractType
                 ],
             ])
             ->add('postalCode', GooglePlaceType::class, [
-                'component_restrictions' => ['country' => $this->country],
+                'component_restrictions' => ['country' => $this->countries],
                 'types'                  => ['(regions)'],
                 'label'                  => false,
                 'attr'                   => [
@@ -111,7 +111,8 @@ class AddressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => $this->addressClass,
+            'data_class'   => $this->addressClass,
+            'label_format' => 'form.address.%name%',
         ]);
     }
 

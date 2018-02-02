@@ -34,7 +34,6 @@ abstract class Address implements AddressInterface
     protected $address2;
 
     /**
-     * @Assert\Regex(pattern="/^[0-9]{5}$/", message="address.postalCode.regexp")
      * @ORM\Column(type="string", nullable=true)
      */
     protected $postalCode;
@@ -309,6 +308,18 @@ abstract class Address implements AddressInterface
     }
 
     /**
+     * @return Coordinate
+     */
+    public function getCoordinate()
+    {
+        $coordinate = new Coordinate();
+        $coordinate->setLatitude($this->getLatitude());
+        $coordinate->setLongitude($this->getLongitude());
+
+        return $coordinate;
+    }
+
+    /**
      * Set country
      *
      * @param CountryInterface $country
@@ -392,14 +403,5 @@ abstract class Address implements AddressInterface
         $this->region = $region;
 
         return $this;
-    }
-
-    public function getCoordinate()
-    {
-        $coordinate = new Coordinate();
-        $coordinate->setLatitude($this->getLatitude());
-        $coordinate->setLongitude($this->getLongitude());
-
-        return $coordinate;
     }
 }

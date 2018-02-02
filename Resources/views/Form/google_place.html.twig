@@ -1,43 +1,45 @@
 {% block google_place_widget %}
-    {% spaceless %}
-        {% set attr = attr|merge({autocomplete:'off'}) %}
+    {% set attr = attr|merge({autocomplete:'off'}) %}
 
-        {{ block('form_widget_simple') }}
+    {{ block('form_widget_simple') }}
 
-        <script>
-            (function () {
-                var input = document.getElementById('{{ form.vars.id }}');
-                var options = {{ options|json_encode()|raw }};
-                var autocomplete;
+    <script>
+        (function () {
+            var input = document.getElementById('{{ form.vars.id }}');
+            var options = {{ options|json_encode()|raw }};
+            var autocomplete;
 
-                input.addEventListener('keydown', init);
+            input.addEventListener('keydown', init);
 
-                function init(event) {
-                    if (event.target.dataset.country) {
-                        var country = document.getElementById(input.dataset.country);
+            function init(event) {
+                if (event.target.dataset.country) {
+                    var country = document.getElementById(input.dataset.country);
+
+                    if (-1 !== country.selectedIndex) {
                         options.componentRestrictions['country'] = country.options[country.selectedIndex].getAttribute('data-code');
-                        country.addEventListener('change', function (event) {
-                            {# Reinitiliaze Google Autocomplete on country update #}
-                            google.maps.event.clearListeners(autocomplete, 'place_changed');
-                            input.addEventListener('keydown', init);
-                            input.dispatchEvent(new Event('reset'));
-                        });
                     }
 
-                    autocomplete = new google.maps.places.Autocomplete(event.target, options);
-                    autocomplete.addListener('place_changed', onPlaceChange);
-                    event.target.removeEventListener('keydown', init); // Only once
+                    country.addEventListener('change', function (event) {
+                        {# Reinitiliaze Google Autocomplete on country update #}
+                        google.maps.event.clearListeners(autocomplete, 'place_changed');
+                        input.addEventListener('keydown', init);
+                        input.dispatchEvent(new Event('reset'));
+                    });
                 }
 
-                function onPlaceChange(event) {
-                    input.autocompleteData = autocomplete;
-                    input.dispatchEvent(new Event('place_changed'));
-                }
-            })();
-        </script>
+                autocomplete = new google.maps.places.Autocomplete(event.target, options);
+                autocomplete.addListener('place_changed', onPlaceChange);
+                event.target.removeEventListener('keydown', init); // Only once
+            }
 
-        {% if api is defined and api is not null %}
-            {{ api|raw }}
-        {% endif %}
-    {% endspaceless %}
+            function onPlaceChange(event) {
+                input.autocompleteData = autocomplete;
+                input.dispatchEvent(new Event('place_changed'));
+            }
+        })();
+    </script>
+
+    {% if api is defined and api is not null %}
+        {{ api|raw }}
+    {% endif %}
 {% endblock %}

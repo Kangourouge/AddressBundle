@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form\Type;
+namespace KRG\AddressBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -21,7 +21,7 @@ class CoordinateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class'   => Coordinate::class,
-            'label_format' => 'form.tag.%name%',
+            'label_format' => 'form.address.%name%',
         ]);
     }
 }

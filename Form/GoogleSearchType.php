@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form\Type;
+namespace KRG\AddressBundle\Form;
 
 use Geocoder\Model\Coordinates;
 use Symfony\Component\Form\AbstractType;
@@ -29,16 +29,15 @@ class GoogleSearchType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['component_restrictions']);
-
         $resolver->setDefaults([
             'component_restrictions' => ['country' => ['fr']],
             'location'               => null,
             'address_type'           => null,
             'address_format'         => 'long_name',
             'types'                  => ['geocode'],
+            'label_format'           => 'form.address.%name%',
         ]);
-
+        $resolver->setRequired(['component_restrictions']);
         $resolver
             ->setAllowedTypes('component_restrictions', 'array')
             ->setAllowedTypes('types', 'array')

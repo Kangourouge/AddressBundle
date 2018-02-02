@@ -1,13 +1,12 @@
 form:
     address:
         address: Address
+        location: Location
         name: Name / Organisation
         address1: Address line 1
         address2: Address line 2
-        postalCode: Postal Code
+        postalCode: Postal code
         city: City
         country: Country
-        department: Department
-        region: Region
 
 approximative: The address's geolocation is approximative. Please precision your location by dragging the marker.

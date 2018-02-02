@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form\Type;
+namespace KRG\AddressBundle\Form;
 
 use KRG\AddressBundle\Helper\ApiHelper;
 use KRG\AddressBundle\Model\Coordinates;
@@ -46,14 +46,13 @@ class GooglePlaceType extends TextType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['component_restrictions', 'types']);
-
         $resolver->setDefaults([
             'location'       => null,
             'address_type'   => null,
             'address_format' => 'long_name',
+            'label_format'   => 'form.address.%name%',
         ]);
-
+        $resolver->setRequired(['component_restrictions', 'types']);
         $resolver
             ->setAllowedTypes('component_restrictions', 'array')
             ->setAllowedTypes('types', 'array')

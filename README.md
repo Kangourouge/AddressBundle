@@ -14,9 +14,7 @@ AppKernel
 public function registerBundles()
 {
     $bundles = array(
-        // ...
         new KRG\AddressBundle\KRGAddressBundle(),
-        // ...
     );
 }
 ```
@@ -31,7 +29,7 @@ Configuration
 krg_address:
     google_maps:
         api_key: %google_maps_api_key%
-        country: fr,ch,it,be,es
+        countries: fr,ch,it,be,es
 
 doctrine:
     orm:
@@ -80,3 +78,7 @@ class Country extends \KRG\AddressBundle\Entity\Country
 {
 }
 ```
+
+EMC\FileinputBundle dependency
+
+MUST HAVE AT LEAST 1 COUNTRY
