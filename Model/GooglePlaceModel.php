@@ -44,6 +44,7 @@ class GooglePlaceModel
     {
         if (isset($this->data['types'][0])) {
             switch ($this->data['types'][0]) {
+                case 'country':
                 case 'street_address':
                 case 'route':
                 case 'postal_code':
@@ -63,7 +64,7 @@ class GooglePlaceModel
 
     public function getCoordinate()
     {
-        if (isset($this->data['coordinate'])) {
+        if (isset($this->data['coordinate']) || isset($this->data['geometry']['location'])) {
             $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
             $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
