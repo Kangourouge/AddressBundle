@@ -3,7 +3,6 @@
 namespace KRG\AddressBundle\Model;
 
 use KRG\AddressBundle\Entity\AddressInterface;
-use Ivory\GoogleMap\Base\Coordinate;
 
 class GooglePlaceModel
 {

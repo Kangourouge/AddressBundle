@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ivory\GoogleMap\Base\Coordinate;
+use KRG\AddressBundle\Model\Coordinates;
 
 class CoordinateType extends AbstractType
 {

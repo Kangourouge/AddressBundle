@@ -2,7 +2,7 @@
 
 namespace KRG\AddressBundle\Entity;
 
-use Ivory\GoogleMap\Base\Coordinate;
+use KRG\AddressBundle\Model\Coordinates;
 
 interface AddressInterface
 {

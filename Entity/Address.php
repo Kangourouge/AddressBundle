@@ -3,7 +3,7 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ivory\GoogleMap\Base\Coordinate;
+use KRG\AddressBundle\Model\Coordinates;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -312,7 +312,7 @@ abstract class Address implements AddressInterface
      */
     public function getCoordinate()
     {
-        $coordinate = new Coordinate();
+        $coordinate = new Coordinates();
         $coordinate->setLatitude($this->getLatitude());
         $coordinate->setLongitude($this->getLongitude());
 
