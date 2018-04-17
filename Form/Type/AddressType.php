@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form;
+namespace KRG\AddressBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;

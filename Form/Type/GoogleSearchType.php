@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form;
+namespace KRG\AddressBundle\Form\Type;
 
 use Geocoder\Model\Coordinates;
 use Symfony\Component\Form\AbstractType;

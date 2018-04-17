@@ -1,6 +1,6 @@
 <?php
 
-namespace KRG\AddressBundle\Form;
+namespace KRG\AddressBundle\Form\Type;
 
 use KRG\AddressBundle\Helper\ApiHelper;
 use KRG\AddressBundle\Model\Coordinates;
