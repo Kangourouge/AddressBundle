@@ -146,8 +146,19 @@
                     }
                 }
 
+                function askPostalCode(event) {
+                    event.preventDefault();
+
+                    setTimeout(function() {
+                        if (address1.value.length > 0 && postalCode.value.length === 0) {
+                            alert("{{ 'mandatory_postalcode'|trans() }}");
+                        }
+                    }, 500);
+                }
+
                 address1.addEventListener('place_changed', onPlaceChange);
                 address1.addEventListener('keyup', onReset);
+                address1.addEventListener('blur', askPostalCode);
                 address1.addEventListener('reset', onReset);
                 postalCode.addEventListener('place_changed', onPlaceChange);
                 postalCode.addEventListener('keyup', onReset);
