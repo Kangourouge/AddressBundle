@@ -4,24 +4,16 @@ namespace KRG\AddressBundle\Helper;
 
 class ApiHelper
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $apiKey;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $libraries;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $locale;
 
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     private $loaded;
 
     function __construct($apiKey, array $libraries, $locale)
@@ -31,11 +23,13 @@ class ApiHelper
         $this->libraries = $libraries;
     }
 
-    public function render($language = 'en', array $libraries = array(), $callback = null, $sensor = false)
+    public function render($language = 'en', array $libraries = array(), $callback = null)
     {
         $libraries = implode(',', $this->libraries);
-        $sensor = json_encode((bool) $sensor);
-        $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>', $this->apiKey, $libraries, $callback);
+        $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>',
+          $this->apiKey,
+          $libraries,
+          $callback);
         $this->loaded = true;
 
         return $output;
