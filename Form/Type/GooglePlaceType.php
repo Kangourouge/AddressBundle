@@ -41,7 +41,7 @@ class GooglePlaceType extends TextType
         ];
         $view->vars['address_type'] = $options['address_type'];
         $view->vars['address_format'] = $options['address_format'];
-        $view->vars['api'] = true !== $this->apiHelper->isLoaded() ? $this->apiHelper->render($this->locale, [], '') : null;
+        $view->vars['api'] = $this->apiHelper->render();
     }
 
     public function configureOptions(OptionsResolver $resolver)

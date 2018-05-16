@@ -16,27 +16,25 @@ class ApiHelper
     /** @var boolean */
     private $loaded;
 
-    function __construct($apiKey, array $libraries, $locale)
+    function __construct(string $apiKey, array $libraries, string $locale)
     {
         $this->apiKey = $apiKey;
         $this->locale = $locale;
         $this->libraries = $libraries;
+        $this->loaded = false;
     }
 
-    public function render($language = 'en', array $libraries = array(), $callback = null)
+    public function render($callback = null)
     {
-        $libraries = implode(',', $this->libraries);
-        $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s"></script>',
-          $this->apiKey,
-          $libraries,
-          $callback);
-        $this->loaded = true;
+        $output = null;
+        if (false === $this->loaded) {
+            $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s"></script>',
+                              $this->apiKey,
+                              implode(',', $this->libraries),
+                              $callback);
+            $this->loaded = true;
+        }
 
         return $output;
-    }
-
-    public function isLoaded()
-    {
-        return $this->loaded;
     }
 }
