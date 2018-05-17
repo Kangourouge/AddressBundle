@@ -46,6 +46,7 @@ class GooglePlaceType extends TextType
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'location'       => null,
             'address_type'   => null,
