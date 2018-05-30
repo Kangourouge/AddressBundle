@@ -43,6 +43,7 @@ class AddressType extends AbstractType
     {
         $builder
             ->add('country', EntityType::class, array(
+                'required'      => $options['required'],
                 'class'         => $this->countryClass,
                 'label'         => false,
                 'attr'          => array('placeholder' => 'form.address.country'),
