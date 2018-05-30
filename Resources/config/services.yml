@@ -17,5 +17,3 @@ services:
 
     KRG\AddressBundle\Helper\:
         resource: '../../Helper'
-
-    KRG\AddressBundle\Form:
