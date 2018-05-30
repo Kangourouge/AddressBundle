@@ -2,16 +2,13 @@
 
 namespace KRG\AddressBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class KRGAddressExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
@@ -22,6 +19,5 @@ class KRGAddressExtension extends Extension
 
         $container->setParameter('krg_address.google_maps.api_key', $config['google_maps']['api_key']);
         $container->setParameter('krg_address.google_maps.countries', $config['google_maps']['countries']);
-        $container->setParameter('krg_address.google_maps.ask_precise_coordinates', $config['google_maps']['ask_precise_coordinates']);
     }
 }

@@ -2,37 +2,22 @@
 
 namespace KRG\AddressBundle\Geocoder\Provider;
 
-use Exception;
-use Geocoder\Exception\InvalidCredentials;
 use Geocoder\Exception\NoResult;
 use Geocoder\Exception\QuotaExceeded;
-use Geocoder\Provider\GoogleMaps as BaseGoogleMaps;
+use Geocoder\Exception\InvalidCredentials;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 
-class GoogleMaps extends BaseGoogleMaps
+class GoogleMaps extends Geocoder\Provider\GoogleMap
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $region;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $useSsl;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $apiKey;
 
-    /**
-     * @param HttpAdapterInterface $adapter An HTTP adapter
-     * @param string               $locale  A locale (optional)
-     * @param string               $region  Region biasing (optional)
-     * @param bool                 $useSsl  Whether to use an SSL connection (optional)
-     * @param string               $apiKey  Google Geocoding API key (optional)
-     */
     public function __construct(HttpAdapterInterface $adapter, $locale = null, $region = null, $useSsl = false, $apiKey = null)
     {
         parent::__construct($adapter, $locale);
@@ -59,9 +44,6 @@ class GoogleMaps extends BaseGoogleMaps
         return $this->executeQuery($query);
     }
 
-    /**
-     * @param string $query
-     */
     private function executeQuery($query)
     {
         $query = $this->buildQuery($query);
@@ -88,7 +70,7 @@ class GoogleMaps extends BaseGoogleMaps
         }
 
         if ('REQUEST_DENIED' === $json['status']) {
-            throw new Exception(sprintf('API access denied. Request: %s - Message: %s',
+            throw new \Exception(sprintf('API access denied. Request: %s - Message: %s',
                 $query, $json['error_message']));
         }
 

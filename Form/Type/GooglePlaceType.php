@@ -4,26 +4,20 @@ namespace KRG\AddressBundle\Form\Type;
 
 use KRG\AddressBundle\Helper\ApiHelper;
 use KRG\AddressBundle\Model\Coordinates;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class GooglePlaceType extends TextType
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $apiKey;
 
-    /**
-     * @var ApiHelper
-     */
+    /** @var ApiHelper */
     private $apiHelper;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $locale;
 
     function __construct(ApiHelper $apiHelper, $apiKey, $locale)
@@ -63,11 +57,6 @@ class GooglePlaceType extends TextType
     }
 
     public function getBlockPrefix()
-    {
-        return $this->getName();
-    }
-
-    public function getName()
     {
         return 'google_place';
     }

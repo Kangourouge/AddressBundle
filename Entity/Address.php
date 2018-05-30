@@ -106,9 +106,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get id
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -116,11 +114,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setName($name)
     {
@@ -130,9 +124,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -140,11 +132,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set address1
-     *
-     * @param string $address1
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setAddress1($address1)
     {
@@ -154,9 +142,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get address1
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getAddress1()
     {
@@ -164,11 +150,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set address2
-     *
-     * @param string $address2
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setAddress2($address2)
     {
@@ -178,9 +160,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get address2
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getAddress2()
     {
@@ -188,11 +168,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set postalCode
-     *
-     * @param string $postalCode
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setPostalCode($postalCode)
     {
@@ -202,9 +178,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get postalCode
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPostalCode()
     {
@@ -212,11 +186,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set city
-     *
-     * @param string $city
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setCity($city)
     {
@@ -226,9 +196,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get city
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getCity()
     {
@@ -236,11 +204,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set formattedAddress
-     *
-     * @param string $formattedAddress
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setFormattedAddress($formattedAddress)
     {
@@ -250,9 +214,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get formattedAddress
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFormattedAddress()
     {
@@ -260,11 +222,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set longitude
-     *
-     * @param float $longitude
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setLongitude($longitude)
     {
@@ -274,9 +232,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get longitude
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getLongitude()
     {
@@ -284,11 +240,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set latitude
-     *
-     * @param float $latitude
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setLatitude($latitude)
     {
@@ -298,9 +250,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get latitude
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getLatitude()
     {
@@ -308,7 +258,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * @return Coordinate
+     * {@inheritdoc}
      */
     public function getCoordinate()
     {
@@ -320,11 +270,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set country
-     *
-     * @param CountryInterface $country
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setCountry(CountryInterface $country)
     {
@@ -334,9 +280,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get country
-     *
-     * @return CountryInterface
+     * {@inheritdoc}
      */
     public function getCountry()
     {
@@ -344,11 +288,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Set approximate
-     *
-     * @param boolean $approximate
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setApproximate($approximate)
     {
@@ -358,9 +298,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * Get approximate
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isApproximate()
     {
@@ -368,7 +306,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDepartment()
     {
@@ -376,8 +314,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * @param string $department
-     * @return $this
+     * {@inheritdoc}
      */
     public function setDepartment($department)
     {
@@ -387,7 +324,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getRegion()
     {
@@ -395,8 +332,7 @@ abstract class Address implements AddressInterface
     }
 
     /**
-     * @param string $region
-     * @return $this
+     * {@inheritdoc}
      */
     public function setRegion($region)
     {

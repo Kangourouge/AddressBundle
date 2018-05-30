@@ -34,10 +34,10 @@
 
             function putFirstPlace() {
                 var results = document.getElementsByClassName('pac-item');
-                if (results === 'undefined') {
+                if (results === undefined || results.length === 0) {
                     return false;
                 }
-                var firstResult = document.getElementsByClassName('pac-item')[0].childNodes;
+                var firstResult = results[0].childNodes;
                 var placeName = firstResult[1].textContent;
                 var placeAddress = firstResult[2].textContent;
                 var geocoder = new google.maps.Geocoder();

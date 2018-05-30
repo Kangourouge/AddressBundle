@@ -3,39 +3,31 @@
 namespace KRG\AddressBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Exception\InvalidConfigurationException;
 
 class AddressType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $countries;
+    /** @var EntityManagerInterface */
+    protected $entityManager;
 
-    /**
-     * @var string
-     */
-    private $addressClass;
+    /** @var string */
+    protected $countries;
 
-    /**
-     * @var string
-     */
-    private $countryClass;
-
-    public function __construct(EntityManager $entityManager, $countries)
+    public function __construct(EntityManagerInterface $entityManager, $countries)
     {
-        $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
-        $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
+        $this->entityManager = $entityManager;
         $this->countries = $countries;
     }
 
@@ -43,67 +35,60 @@ class AddressType extends AbstractType
     {
         $builder
             ->add('country', EntityType::class, [
-                'class'         => $this->countryClass,
+                'class'         => $this->entityManager->getClassMetadata(CountryInterface::class)->getName(),
                 'label'         => false,
-                'attr'          => [
-                    'placeholder' => 'form.address.country'
-                ],
+                'attr'          => ['placeholder' => 'form.address.country'],
                 'choice_attr'   => function (CountryInterface $country, $key, $index) {
+                    if (strlen($country->getCode()) === 0) {
+                        throw new InvalidConfigurationException('Each countries must have a country code in database.');
+                    }
+
                     return ['data-code' => strtolower($country->getCode())];
                 },
                 'query_builder' => function (EntityRepository $repository) {
                     return $repository->createQueryBuilder('c')->orderBy('c.name');
-                }
+                },
             ])
             ->add('name', TextType::class, [
-                'label'    => false,
                 'required' => false,
-                'attr'     => [
-                    'placeholder' => 'form.address.name'
-                ],
+                'label'    => false,
+                'attr'     => ['placeholder' => 'form.address.name'],
             ])
             ->add('address1', GooglePlaceType::class, [
+                'label'                  => false,
+                'attr'                   => ['placeholder' => 'form.address.address1',],
                 'component_restrictions' => ['country' => $this->countries],
                 'types'                  => [],
-                'label'                  => false,
-                'attr'                   => [
-                    'placeholder' => 'form.address.address1',
-                ],
             ])
             ->add('address2', TextType::class, [
                 'required' => false,
                 'label'    => false,
-                'attr'     => [
-                    'placeholder' => 'form.address.address2'
-                ],
+                'attr'     => ['placeholder' => 'form.address.address2'],
             ])
             ->add('postalCode', GooglePlaceType::class, [
+                'label'                  => false,
+                'attr'                   => ['placeholder' => 'form.address.postalCode'],
                 'component_restrictions' => ['country' => $this->countries],
                 'types'                  => ['(regions)'],
-                'label'                  => false,
-                'attr'                   => [
-                    'placeholder' => 'form.address.postalCode'
-                ],
             ])
             ->add('city', TextType::class, [
-                'label' => false,
                 'attr'  => [
                     'placeholder' => 'form.address.city'
                 ],
+                'label' => false,
             ])
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)
             ->add('department', HiddenType::class)
             ->add('region', HiddenType::class)
-            ->add('approximate', HiddenType::class, [
-                'empty_data' => true
-            ]);
+            ->add('approximate', HiddenType::class);
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         parent::finishView($view, $form, $options);
 
+        $view->vars['ask_precise_coordinates'] = $options['ask_precise_coordinates'];
         $view->children['address1']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
         $view->children['postalCode']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
     }
@@ -111,12 +96,13 @@ class AddressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'   => $this->addressClass,
-            'label_format' => 'form.address.%name%',
+            'data_class'              => $this->entityManager->getClassMetadata(AddressInterface::class)->getName(),
+            'label_format'            => 'form.address.%name%',
+            'ask_precise_coordinates' => true
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'address';
     }

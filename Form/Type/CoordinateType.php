@@ -3,10 +3,10 @@
 namespace KRG\AddressBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use KRG\AddressBundle\Model\Coordinates;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use KRG\AddressBundle\Model\Coordinates;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class CoordinateType extends AbstractType
 {

@@ -6,19 +6,13 @@ use KRG\AddressBundle\Entity\AddressInterface;
 
 class GooglePlaceModel
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $data;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $normalizedData;
 
-    /**
-     * @var AddressInterface
-     */
+    /** @var AddressInterface */
     private $address;
 
     function __construct(array $data)
@@ -26,9 +20,6 @@ class GooglePlaceModel
         $this->data = $data;
     }
 
-    /**
-     * @return array
-     */
     public function getData()
     {
         return $this->data;
@@ -68,8 +59,9 @@ class GooglePlaceModel
             $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
             $coordinate = new Coordinate();
-            $coordinate->setLatitude($latitude);
-            $coordinate->setLongitude($longitude);
+            $coordinate
+                ->setLatitude($latitude)
+                ->setLongitude($longitude);
 
             return $coordinate;
         }

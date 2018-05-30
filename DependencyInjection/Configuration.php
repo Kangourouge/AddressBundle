@@ -18,7 +18,6 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
                         ->scalarNode('countries')->defaultValue(null)->end()
-                        ->booleanNode('ask_precise_coordinates')->defaultValue(true)->end()
                     ->end()
                 ->end()
             ->end();

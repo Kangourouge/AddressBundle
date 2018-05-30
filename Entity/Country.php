@@ -38,7 +38,7 @@ class Country implements CountryInterface
     protected $flag;
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -46,9 +46,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get id
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -56,11 +54,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setName($name)
     {
@@ -70,9 +64,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -80,11 +72,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set flag
-     *
-     * @param FileInterface|null $flag
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setFlag(FileInterface $flag = null)
     {
@@ -94,9 +82,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get flag
-     *
-     * @return FileInterface
+     * {@inheritdoc}
      */
     public function getFlag()
     {
@@ -104,11 +90,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setCode($code)
     {
@@ -118,9 +100,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get code
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getCode()
     {
