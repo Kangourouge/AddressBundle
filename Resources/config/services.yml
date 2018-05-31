@@ -23,3 +23,8 @@ services:
             - ['places']
             - '%locale%'
         public: false
+
+    KRG\AddressBundle\Intl\Language:
+        class: KRG\AddressBundle\Intl\Language
+        arguments:
+            - '@doctrine.orm.entity_manager'
