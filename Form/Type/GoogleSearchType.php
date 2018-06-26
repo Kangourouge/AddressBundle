@@ -11,6 +11,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GoogleSearchType extends AbstractType
 {
+    /** @var string */
+    protected $countries;
+
+    public function __construct($countries)
+    {
+        $this->countries = $countries;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -30,7 +38,7 @@ class GoogleSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'component_restrictions' => ['country' => ['fr']],
+            'component_restrictions' => ['country' => $this->countries],
             'location'               => null,
             'address_type'           => null,
             'address_format'         => 'long_name',
