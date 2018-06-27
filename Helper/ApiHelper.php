@@ -28,7 +28,7 @@ class ApiHelper
     {
         $output = null;
         if (false === $this->loaded) {
-            $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s"></script>',
+            $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>',
                               $this->apiKey, implode(',', $this->libraries), $callback);
             $this->loaded = true;
         }
