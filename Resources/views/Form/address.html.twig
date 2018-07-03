@@ -29,13 +29,6 @@
                 approximate: document.getElementById('{{ form.approximate.vars.id }}'),
             };
 
-            inputs.address1.addEventListener('place_changed', onPlaceChange);
-            inputs.address1.addEventListener('keyDown', handleKeys);
-            inputs.address1.addEventListener('reset', reset);
-            inputs.postalCode.addEventListener('place_changed', onPlaceChange);
-            inputs.postalCode.addEventListener('keyDown', handleKeys);
-            inputs.postalCode.addEventListener('reset', reset);
-
             function onPlaceChange(event) {
                 var isApproximate = (event.target === inputs.postalCode);
 
@@ -151,6 +144,39 @@
                     inputs[field].value = ''
                 }
             }
+
+            var selectFirstOnEnter = function (input) {
+                var _addEventListener = (input.addEventListener) ? input.addEventListener : input.attachEvent;
+
+                function addEventListenerWrapper(type, listener) {
+                    if (type == 'keydown') {
+                        var origListener = listener;
+                        listener = function (event) {
+                            var addressList = document.querySelectorAll('.pac-item-selected').length > 0;
+                            if (event.which == 13 && !addressList) {
+                                origListener.apply(input, [new KeyboardEvent('keypress',{keyCode: 40})]);
+                            }
+                            origListener.apply(input, [event]);
+                        };
+                    }
+                    _addEventListener.apply(input, [type, listener]);
+                }
+
+                if (input.addEventListener) {
+                    input.addEventListener = addEventListenerWrapper;
+                } else if (input.attachEvent) {
+                    input.attachEvent = addEventListenerWrapper;
+                }
+            }
+
+            inputs.address1.addEventListener('place_changed', onPlaceChange);
+            inputs.address1.addEventListener('keypress', handleKeys);
+            inputs.address1.addEventListener('reset', reset);
+            selectFirstOnEnter(inputs.address1);
+            inputs.postalCode.addEventListener('place_changed', onPlaceChange);
+            inputs.postalCode.addEventListener('keypress', handleKeys);
+            inputs.postalCode.addEventListener('reset', reset);
+            selectFirstOnEnter(inputs.postalCode);
         })();
     </script>
 {% endblock %}

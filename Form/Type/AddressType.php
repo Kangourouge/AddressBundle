@@ -7,6 +7,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
@@ -80,8 +83,20 @@ class AddressType extends AbstractType
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)
             ->add('department', HiddenType::class)
-            ->add('region', HiddenType::class)
-            ->add('approximate', HiddenType::class);
+            ->add('region', HiddenType::class);
+
+        $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
+    }
+
+    public function onPostSetData(FormEvent $event)
+    {
+        $form = $event->getForm();
+        /** @var $data AddressInterface */
+        $data = $event->getData();
+
+        $form->add('approximate', HiddenType::class, [
+            'data' => ($data === null || $data->isApproximate())
+        ]);
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)

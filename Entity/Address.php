@@ -81,7 +81,7 @@ abstract class Address implements AddressInterface
     protected $longitude;
 
     /**
-     * @ORM\Column(type="boolean", name="is_approximate")
+     * @ORM\Column(type="boolean", name="is_approximate", options={"default": true})
      */
     protected $approximate;
 
