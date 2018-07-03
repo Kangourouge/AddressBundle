@@ -95,7 +95,7 @@ class AddressType extends AbstractType
         $data = $event->getData();
 
         $form->add('approximate', HiddenType::class, [
-            'data' => ($data === null || $data->isApproximate())
+            'data' => (int)($data === null || $data->isApproximate())
         ]);
     }
 
