@@ -5,6 +5,7 @@ namespace KRG\AddressBundle\Form\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use KRG\AddressBundle\Data\FranceData;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -86,6 +87,7 @@ class AddressType extends AbstractType
             ->add('region', HiddenType::class);
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, [$this, 'onPostSetData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     public function onPostSetData(FormEvent $event)
@@ -97,6 +99,18 @@ class AddressType extends AbstractType
         $form->add('approximate', HiddenType::class, [
             'data' => (int)($data === null || $data->isApproximate())
         ]);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+
+        // Handle missing Google Autocomplete attributes
+        if ('' === $data['department']) {
+            $data['department'] = FranceData::getDepartmentByPostalCode(substr($data['postalCode'], 0, 2));
+            $event->setData($data);
+        }
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
