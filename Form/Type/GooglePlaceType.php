@@ -14,24 +14,24 @@ class GooglePlaceType extends TextType
      * @var ApiHelper
      */
     private $apiHelper;
-    
+
     /**
      * @var string
      */
     private $apiKey;
-    
+
     /**
      * @var string
      */
     private $locale;
-    
+
     function __construct(ApiHelper $apiHelper, $apiKey, $locale)
     {
         $this->apiHelper = $apiHelper;
         $this->apiKey = $apiKey;
         $this->locale = $locale;
     }
-    
+
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
@@ -64,7 +64,7 @@ class GooglePlaceType extends TextType
             'address_format'         => 'string',
         ));
     }
-    
+
     public function getBlockPrefix()
     {
         return $this->getName();

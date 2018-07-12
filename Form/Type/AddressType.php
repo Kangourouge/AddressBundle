@@ -4,6 +4,7 @@ namespace KRG\AddressBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use KRG\AddressBundle\Data\FranceData;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -11,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
@@ -88,6 +91,8 @@ class AddressType extends AbstractType
             ->add('approximate', HiddenType::class, array(
                 'empty_data' => true
             ));
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
@@ -96,6 +101,18 @@ class AddressType extends AbstractType
 
         $view->children['address1']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
         $view->children['postalCode']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+
+        // Handle missing Google Autocomplete attributes
+        if ('' === $data['department']) {
+            $data['department'] = FranceData::getDepartmentByPostalCode(substr($data['postalCode'], 0, 2));
+            $event->setData($data);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
