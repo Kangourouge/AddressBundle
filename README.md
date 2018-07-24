@@ -74,3 +74,9 @@ class Country extends \KRG\AddressBundle\Entity\Country
 ```
 
 EMC\FileinputBundle dependency
+
+```
+ ->add('address', AddressType::class, [
+    'label_format' => null, // Without labels
+]);
+```

@@ -2,13 +2,11 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Data\FranceData;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
@@ -40,7 +38,6 @@ class AddressType extends AbstractType
         $builder
             ->add('country', EntityType::class, [
                 'class'         => $this->entityManager->getClassMetadata(CountryInterface::class)->getName(),
-                'label'         => false,
                 'attr'          => ['placeholder' => 'form.address.country'],
                 'choice_attr'   => function (CountryInterface $country, $key, $index) {
                     if (strlen($country->getCode()) === 0) {
@@ -55,22 +52,18 @@ class AddressType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'required' => false,
-                'label'    => false,
                 'attr'     => ['placeholder' => 'form.address.name'],
             ])
             ->add('address1', GooglePlaceType::class, [
-                'label'                  => false,
                 'attr'                   => ['placeholder' => 'form.address.address1',],
                 'component_restrictions' => ['country' => $this->countries],
                 'types'                  => [],
             ])
             ->add('address2', TextType::class, [
                 'required' => false,
-                'label'    => false,
                 'attr'     => ['placeholder' => 'form.address.address2'],
             ])
             ->add('postalCode', GooglePlaceType::class, [
-                'label'                  => false,
                 'attr'                   => ['placeholder' => 'form.address.postalCode'],
                 'component_restrictions' => ['country' => $this->countries],
                 'types'                  => ['(regions)'],
@@ -79,7 +72,6 @@ class AddressType extends AbstractType
                 'attr'  => [
                     'placeholder' => 'form.address.city'
                 ],
-                'label' => false,
             ])
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)
@@ -115,11 +107,15 @@ class AddressType extends AbstractType
 
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        parent::finishView($view, $form, $options);
-
         $view->vars['ask_precise_coordinates'] = $options['ask_precise_coordinates'];
         $view->children['address1']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
         $view->children['postalCode']->vars['attr']['data-country'] = $view->children['country']->vars['id'];
+
+        if (null === $options['label_format']) {
+            foreach ($view->children as $child) {
+                $child->vars['label'] = false;
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
