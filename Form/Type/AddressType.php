@@ -63,15 +63,15 @@ class AddressType extends AbstractType
                 'required' => false,
                 'attr'     => ['placeholder' => 'form.address.address2'],
             ])
-            ->add('postalCode', GooglePlaceType::class, [
-                'attr'                   => ['placeholder' => 'form.address.postalCode'],
-                'component_restrictions' => ['country' => $this->countries],
-                'types'                  => ['(regions)'],
+            ->add('postalCode', TextType::class, [
+                'attr' => ['placeholder' => 'form.address.postalCode'],
             ])
-            ->add('city', TextType::class, [
-                'attr'  => [
+            ->add('city', GooglePlaceType::class, [
+                'attr'                   => [
                     'placeholder' => 'form.address.city'
                 ],
+                'component_restrictions' => ['country' => $this->countries],
+                'types'                  => ['(regions)'],
             ])
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)

@@ -30,12 +30,12 @@
             };
 
             function onPlaceChange(event) {
-                var isApproximate = (event.target === inputs.postalCode);
+                var isApproximate = (event.target === inputs.city);
 
                 for (var field in inputs) {
                     if (isApproximate) {
                         if ('address1' === field) {
-                            continue; {# Keep address on postalCode update #}
+                            continue; {# Keep address on city update #}
                         }
                     }
 
@@ -173,10 +173,10 @@
             inputs.address1.addEventListener('keypress', handleKeys);
             inputs.address1.addEventListener('reset', reset);
             selectFirstOnEnter(inputs.address1);
-            inputs.postalCode.addEventListener('place_changed', onPlaceChange);
-            inputs.postalCode.addEventListener('keypress', handleKeys);
-            inputs.postalCode.addEventListener('reset', reset);
-            selectFirstOnEnter(inputs.postalCode);
+            inputs.city.addEventListener('place_changed', onPlaceChange);
+            inputs.city.addEventListener('keypress', handleKeys);
+            inputs.city.addEventListener('reset', reset);
+            selectFirstOnEnter(inputs.city);
         })();
     </script>
 {% endblock %}
