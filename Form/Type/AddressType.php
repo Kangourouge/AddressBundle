@@ -37,17 +37,20 @@ class AddressType extends AbstractType
     {
         $builder
             ->add('country', EntityType::class, [
-                'class'         => $this->entityManager->getClassMetadata(CountryInterface::class)->getName(),
-                'attr'          => ['placeholder' => 'form.address.country'],
-                'choice_attr'   => function (CountryInterface $country, $key, $index) {
+                'class'             => $this->entityManager->getClassMetadata(CountryInterface::class)->getName(),
+                'attr'              => ['placeholder' => 'form.address.country'],
+                'choice_attr'       => function (CountryInterface $country, $key, $index) {
                     if (strlen($country->getCode()) === 0) {
                         throw new InvalidConfigurationException('Each countries must have a country code in database.');
                     }
 
                     return ['data-code' => strtolower($country->getCode())];
                 },
-                'query_builder' => function (EntityRepository $repository) {
-                    return $repository->createQueryBuilder('c')->orderBy('c.name');
+                'query_builder'     => function (EntityRepository $repository) {
+                    return $repository->createQueryBuilder('country')->where('country.active = 1')->orderBy('country.name');
+                },
+                'preferred_choices' => function ($value, $key) {
+                    return $value->isPrefered();
                 },
             ])
             ->add('name', TextType::class, [

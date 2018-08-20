@@ -1,0 +1,12 @@
+imports:
+    - { resource: easyadmin/ }
+
+easy_admin:
+    design:
+        menu:
+            -
+                label: 'menu.krg_address'
+                priority: 4
+                children:
+                    - { entity: 'Country', icon: 'globe', label: 'menu.country' }
+                    - { entity: 'Nationality', icon: 'flag-o', label: 'menu.nationality' }

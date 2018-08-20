@@ -38,19 +38,19 @@ class Country implements CountryInterface
     protected $flag;
 
     /**
-     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\NationalityInterface")
-     * @ORM\JoinColumn(name="nationality_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\NationalityInterface", inversedBy="countries", cascade={"persist", "merge", "detach"})
+     * @ORM\JoinColumn(name="nationality_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     protected $nationality;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : 0})
      * @var boolean
      */
     protected $prefered;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : 1})
      * @var boolean
      */
     protected $active;
@@ -145,6 +145,8 @@ class Country implements CountryInterface
     public function setNationality(NationalityInterface $nationality)
     {
         $this->nationality = $nationality;
+
+        $nationality->addCountry($this);
     }
 
     /**

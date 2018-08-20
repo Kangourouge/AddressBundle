@@ -1,0 +1,17 @@
+menu:
+    krg_address: Localisation
+    country: Pays
+    nationality: Nationalité
+
+nationality:
+    name: Nom
+
+country:
+    active: Actif
+    prefered: Préféré
+    name: Nom
+    flag: Drapeau
+    nationality: Nationalité
+
+group:
+    infos: Informations

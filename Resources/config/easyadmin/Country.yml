@@ -1,0 +1,33 @@
+easy_admin:
+    entities:
+        Country:
+            class: 'KRG\AddressBundle\Entity\CountryInterface'
+            list:
+                fields:
+                    - { property: 'name', label: 'country.name' }
+                    - { property: 'code' }
+                    - { property: 'active', label: 'country.active' }
+                    - { property: 'prefered', label: 'country.prefered' }
+                sort: ['name', 'ASC']
+            edit:
+                fields:
+                    - { type: 'group', label: 'group.infos' }
+                    - { property: 'name', label: 'country.name' }
+                    - { property: 'code' }
+                    - { property: 'flag', label: 'country.flag', type: 'EMC\FileinputBundle\Form\Type\FileinputType' }
+                    - { property: 'nationality', label: 'country.nationality' }
+
+                    - { type: 'group', label: 'group.status' }
+                    - { property: 'active', label: 'country.active' }
+                    - { property: 'prefered', label: 'country.prefered' }
+            new:
+                fields:
+                    - { type: 'group', label: 'group.infos' }
+                    - { property: 'name', label: 'country.name' }
+                    - { property: 'code' }
+                    - { property: 'flag', label: 'country.flag', type: 'EMC\FileinputBundle\Form\Type\FileinputType' }
+                    - { property: 'nationality', label: 'country.nationality' }
+
+                    - { type: 'group', label: 'group.status' }
+                    - { property: 'active', label: 'country.active' }
+                    - { property: 'prefered', label: 'country.prefered' }
