@@ -36,6 +36,7 @@ doctrine:
         resolve_target_entities:
             KRG\AddressBundle\Entity\AddressInterface: AppBundle\Entity\Address
             KRG\AddressBundle\Entity\CountryInterface: AppBundle\Entity\Country
+            KRG\AddressBundle\Entity\NationalityInterface: AppBundle\Entity\Nationality
 ```
 
 Entity

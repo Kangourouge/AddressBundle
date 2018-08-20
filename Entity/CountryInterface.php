@@ -60,4 +60,66 @@ interface CountryInterface
      * @return string
      */
     public function getCode();
+
+    /**
+     * Get nationality
+     *
+     * @return NationalityInterface
+     */
+    public function getNationality();
+
+    /**
+     * Set nationality
+     *
+     * @param NationalityInterface $nationality
+     *
+     * @return Country
+     */
+    public function setNationality(NationalityInterface $nationality);
+
+    /**
+     * Set prefered
+     *
+     * @param string $prefered
+     *
+     * @return Country
+     */
+    public function setPrefered($prefered);
+
+    /**
+     * Get prefered
+     *
+     * @return string
+     */
+    public function getPrefered();
+
+    /**
+     * Is prefered
+     *
+     * @return string
+     */
+    public function isPrefered();
+
+    /**
+     * Set active
+     *
+     * @param string $active
+     *
+     * @return Country
+     */
+    public function setActive($active);
+
+    /**
+     * Get active
+     *
+     * @return string
+     */
+    public function getActive();
+
+    /**
+     * Is active
+     *
+     * @return string
+     */
+    public function isActive();
 }

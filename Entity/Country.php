@@ -38,11 +38,35 @@ class Country implements CountryInterface
     protected $flag;
 
     /**
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\NationalityInterface")
+     * @ORM\JoinColumn(name="nationality_id", referencedColumnName="id", nullable=true)
+     */
+    protected $nationality;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    protected $prefered;
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    protected $active;
+
+    public function __construct()
+    {
+        $this->active = true;
+        $this->prefered = false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __toString()
     {
-        return $this->name;
+        return (string)$this->name;
     }
 
     /**
@@ -105,5 +129,69 @@ class Country implements CountryInterface
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNationality()
+    {
+        return $this->nationality;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNationality(NationalityInterface $nationality)
+    {
+        $this->nationality = $nationality;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrefered($prefered)
+    {
+        $this->prefered = $prefered;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrefered()
+    {
+        return $this->prefered;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPrefered()
+    {
+        return $this->getPrefered();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isActive()
+    {
+        return $this->getActive();
     }
 }
