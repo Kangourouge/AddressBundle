@@ -11,4 +11,4 @@ form:
         region: Region
 
 approximative: The address's geolocation is approximative.
-mandatory_postalcode: Postal code is mandatory.
+mandatory_city: Please select a city.

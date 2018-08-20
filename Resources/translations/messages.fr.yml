@@ -10,4 +10,4 @@ form:
         department: Departement
 
 approximative: La géolocalisation de cette adresse est approximative. Veuillez précisez vos coordonnées en déplaçant le marqueur.
-mandatory_postalcode: Veuillez sélectionner un code postal.
+mandatory_city: Veuillez sélectionner une ville.
