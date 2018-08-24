@@ -7,6 +7,7 @@ easy_admin:
             -
                 label: 'menu.krg_address'
                 priority: 4
+                roles: ['ROLE_ADDRESS']
                 children:
                     - { entity: 'Country', icon: 'globe', label: 'menu.country' }
                     - { entity: 'Nationality', icon: 'flag-o', label: 'menu.nationality' }
