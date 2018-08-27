@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\MappedSuperclass
+ * @ORM\MappedSuperclass(repositoryClass="KRG\AddressBundle\Repository\NationalityRepository")
  */
 class Nationality implements NationalityInterface
 {
@@ -95,5 +95,19 @@ class Nationality implements NationalityInterface
     public function getCountries()
     {
         return $this->countries;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isActive()
+    {
+        foreach ($this->getCountries() as $country) {
+            if ($country->isActive()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

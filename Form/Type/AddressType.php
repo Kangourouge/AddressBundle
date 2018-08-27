@@ -3,20 +3,19 @@
 namespace KRG\AddressBundle\Form\Type;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use KRG\AddressBundle\Data\FranceData;
 use KRG\AddressBundle\Entity\AddressInterface;
 use KRG\AddressBundle\Entity\CountryInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Exception\InvalidConfigurationException;
 
 class AddressType extends AbstractType
@@ -36,9 +35,9 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('country', EntityType::class, [
-                'class'             => $this->entityManager->getClassMetadata(CountryInterface::class)->getName(),
+            ->add('country', ChoiceType::class, [
                 'attr'              => ['placeholder' => 'form.address.country'],
+                'choices'           => $this->entityManager->getRepository(CountryInterface::class)->findBy(['active' => 1]),
                 'choice_attr'       => function (CountryInterface $country, $key, $index) {
                     if (strlen($country->getCode()) === 0) {
                         throw new InvalidConfigurationException('Each countries must have a country code in database.');
@@ -46,11 +45,11 @@ class AddressType extends AbstractType
 
                     return ['data-code' => strtolower($country->getCode())];
                 },
-                'query_builder'     => function (EntityRepository $repository) {
-                    return $repository->createQueryBuilder('country')->where('country.active = 1')->orderBy('country.name');
+                'choice_label' => function (CountryInterface $choice, $key, $value) {
+                    return $choice->getName();
                 },
-                'preferred_choices' => function ($value, $key) {
-                    return $value->isPrefered();
+                'preferred_choices' => function (CountryInterface $value, $key) {
+                    return $value->isActive() && $value->isPrefered();
                 },
             ])
             ->add('name', TextType::class, [
@@ -99,7 +98,6 @@ class AddressType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        $form = $event->getForm();
 
         // Handle missing Google Autocomplete attributes
         if ('' === $data['department']) {

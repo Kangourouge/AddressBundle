@@ -112,14 +112,14 @@ interface CountryInterface
     /**
      * Get active
      *
-     * @return string
+     * @return bool
      */
     public function getActive();
 
     /**
      * Is active
      *
-     * @return string
+     * @return bool
      */
     public function isActive();
 }

@@ -49,4 +49,11 @@ interface NationalityInterface
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getCountries();
+
+    /**
+     * Is active
+     *
+     * @return bool
+     */
+    public function isActive();
 }
