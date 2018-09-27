@@ -40,6 +40,7 @@
                     } else {
                         address.nextElementSibling.classList.add('hide');
                     }
+
                     update(event.target.googleAutocomplete, _fields);
                     handleApproximate(isApproximate, event.target.googleAutocomplete)
                 }
@@ -55,6 +56,7 @@
                             zoom: 13,
                             center: {lat: parseFloat(mapping['latitude'].value), lng: parseFloat(mapping['longitude'].value)}
                         });
+
                         mapEl.style.height = '200px';
                         marker = new google.maps.Marker({
                             map: map,
@@ -62,6 +64,7 @@
                             animation: google.maps.Animation.DROP,
                             position: {lat: parseFloat(mapping['latitude'].value), lng: parseFloat(mapping['longitude'].value)}
                         });
+
                         google.maps.event.addListener(marker, 'dragend', function (event) {
                             mapping['latitude'].value = this.getPosition().lat();
                             mapping['longitude'].value = this.getPosition().lng();
@@ -101,6 +104,7 @@
                         if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
                             continue;
                         }
+
                         value = '';
                         switch(field) {
                             case 'name':
@@ -110,6 +114,7 @@
                                     value = mapping[field].value;
                                 }
                                 break;
+
                             case 'address1':
                                 sublocality_level_1 = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components)
                                 if (sublocality_level_1) {
@@ -122,21 +127,27 @@
                                     }
                                 }
                                 break;
+
                             case 'postalCode':
                                 value = autocomplete.getAddressValue('postal_code', 'short_name', components);
                                 break;
+
                             case 'city':
                                 value = autocomplete.getAddressValue('locality', 'short_name', components);
                                 break;
+
                             case 'department':
                                 value = autocomplete.getAddressValue('administrative_area_level_2', 'long_name', components);
                                 break;
+
                             case 'region':
                                 value = autocomplete.getAddressValue('administrative_area_level_1', 'long_name', components);
                                 break;
+
                             case 'latitude':
                                 value = place.geometry.location.lat();
                                 break;
+
                             case 'longitude':
                                 value = place.geometry.location.lng();
                                 break;
