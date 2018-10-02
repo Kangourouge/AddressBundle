@@ -15,3 +15,14 @@ country:
 
 group:
     infos: Informations
+
+form:
+    address:
+        address: Votre adresse
+        location: Adresse
+        name: Raison sociale/Dénomination
+        address1: Adresse ligne 1
+        address2: Adresse ligne 2
+        postalCode: Code Postal
+        city: Ville
+        country: Pays
