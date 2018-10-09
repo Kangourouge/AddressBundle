@@ -1,0 +1,9 @@
+menu:
+    krg_address: Localisation
+    country: Pays
+
+country:
+    name: Nom
+    flag: Drapeau
+    prefered: Préféré
+    active: Actif

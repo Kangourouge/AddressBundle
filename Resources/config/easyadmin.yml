@@ -1,0 +1,11 @@
+imports:
+    - { resource: easyadmin/ }
+
+easy_admin:
+    design:
+        menu:
+            -
+                label: 'Address'
+                priority: 4
+                children:
+                    - { entity: 'Country', icon: 'globe' }
