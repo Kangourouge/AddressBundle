@@ -83,9 +83,9 @@
 
                 switch (field) {
                     case 'address1':
-                        sublocality_level_1 = getComponentValue('sublocality_level_1', 'short_name', components);
-                        if (sublocality_level_1) {
-                            value = sublocality_level_1;
+                        address1 = getComponentValue(['sublocality_level_1', 'premise'], 'short_name', components);
+                        if (address1) {
+                            value = address1;
                         } else {
                             value = getComponentValue('route', 'short_name', components);
                             street_number = getComponentValue('street_number', 'short_name', components);
