@@ -60,7 +60,7 @@ class Address implements AddressInterface
     protected $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\CountryInterface", cascade={"merge", "detach"})
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\CountryInterface", fetch="EAGER")
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      * @var Country
      */
