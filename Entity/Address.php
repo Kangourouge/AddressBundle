@@ -34,7 +34,7 @@ class Address implements AddressInterface
     protected $address2;
 
     /**
-     * @Assert\Regex(pattern="/^[0-9]{5}$/", message="address.postalCode.regexp")
+     * @Assert\NotBlank
      * @ORM\Column(type="string", nullable=true)
      */
     protected $postalCode;
