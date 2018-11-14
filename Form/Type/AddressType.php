@@ -17,68 +17,24 @@ use Symfony\Component\Form\FormInterface;
 
 class AddressType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $addressClass;
-
-    /**
-     * @var string
-     */
-    private $countryClass;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->addressClass = $entityManager->getClassMetadata(AddressInterface::class)->getName();
-        $this->countryClass = $entityManager->getClassMetadata(CountryInterface::class)->getName();
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('country', EntityType::class, array(
-                'class'         => $this->countryClass,
-                'label'         => false,
-                'attr'          => array('placeholder' => 'form.address.country', 'data-sonata-select2' => 'false'),
+            ->add('country', null, array(
                 'choice_attr'   => function (CountryInterface $country, $key, $index) {
                     return array('data-code' => strtolower($country->getCode()));
-                },
-                'query_builder' => function (EntityRepository $repository) {
-                    return $repository
-                        ->createQueryBuilder('c')
-                        ->orderBy('c.name');
                 }
             ))
-            ->add('name', TextType::class, array(
-                'label'    => false,
-                'required' => false,
-                'attr'     => array('placeholder' => 'form.address.name'),
-            ))
-            ->add('address1', GooglePlaceType::class, array(
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.address1'),
-            ))
-            ->add('address2', TextType::class, array(
-                'required' => false,
-                'label'    => false,
-                'attr'     => array('placeholder' => 'form.address.address2'),
-            ))
-            ->add('postalCode', GooglePlaceType::class, array(
-                'types' => array('(regions)'),
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.postalCode'),
-            ))
-            ->add('city', TextType::class, array(
-                'label' => false,
-                'attr'  => array('placeholder' => 'form.address.city'),
-            ))
+            ->add('name')
+            ->add('address1', GooglePlaceType::class)
+            ->add('address2')
+            ->add('postalCode', GooglePlaceType::class, ['types' => ['(regions)']])
+            ->add('city')
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class)
             ->add('department', HiddenType::class)
             ->add('region', HiddenType::class)
-            ->add('approximate', HiddenType::class, array(
-                'empty_data' => true
-            ));
+            ->add('approximate', HiddenType::class, ['empty_data' => true]);
     }
 
     public function finishView(FormView $view, FormInterface $form, array $options)
@@ -91,8 +47,9 @@ class AddressType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => $this->addressClass,
-        ));
+        $resolver->setDefault('data_class', AddressInterface::class);
+        $resolver->setDefault('required', false);
+        $resolver->setDefault('label_format', 'form.address.%name%');
+        $resolver->setDefault('validation_groups', ['Localize']);
     }
 }

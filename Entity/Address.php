@@ -20,40 +20,46 @@ class Address implements AddressInterface
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $name;
 
     /**
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $address1;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $address2;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $postalCode;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $city;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
      * @var string
      */
     protected $department;
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
      * @var string
      */
@@ -62,27 +68,33 @@ class Address implements AddressInterface
     /**
      * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\CountryInterface", fetch="EAGER")
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
-     * @var Country
+     * @var CountryInterface
      */
     protected $country;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @var string
      */
     protected $formattedAddress;
 
     /**
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="float", nullable=true)
+     * @var float
      */
     protected $latitude;
 
     /**
+     * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="float", nullable=true)
+     * @var float
      */
     protected $longitude;
 
     /**
      * @ORM\Column(type="boolean", name="is_approximate")
+     * @var bool
      */
     protected $approximate;
 
@@ -394,6 +406,9 @@ class Address implements AddressInterface
         return $this;
     }
 
+    /**
+     * @return CoordinatesModel
+     */
     public function getCoordinate()
     {
         return new CoordinatesModel($this->getLatitude(), $this->getLongitude());

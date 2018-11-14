@@ -25,7 +25,7 @@ class GooglePlaceType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['options'] = array(
-            'types'                 => $options['types'],
+            'types' => $options['types'],
         );
 
         $view->vars['address_type'] = $options['address_type'];
@@ -38,16 +38,14 @@ class GooglePlaceType extends AbstractType
         parent::configureOptions($resolver);
 
         $resolver
-            ->setRequired(array('types'))
-            ->setDefaults(array(
-                'location'       => null,
-                'address_type'   => null,
-                'address_format' => 'long_name',
-                'types'          => array(),
-            ))
+            ->setDefault('location', null)
+            ->setDefault('address_type', null)
+            ->setDefault('address_format', 'long_name')
+            ->setDefault('types', ['types'])
+            ->setDefault('required', false)
             ->setAllowedTypes('types', 'array')
-            ->setAllowedTypes('location', array('null', CoordinatesModel::class))
-            ->setAllowedTypes('address_type', array('null', 'string'))
+            ->setAllowedTypes('location', ['null', CoordinatesModel::class])
+            ->setAllowedTypes('address_type', ['null', 'string'])
             ->setAllowedTypes('address_format', 'string');
     }
 
