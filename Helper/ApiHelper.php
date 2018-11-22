@@ -24,12 +24,12 @@ class ApiHelper
         $this->loaded = false;
     }
 
-    public function render($callback = null)
+    public function render($callback = null, $async = true, $defer = true)
     {
         $output = null;
         if (false === $this->loaded) {
-            $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s" async defer></script>',
-                              $this->apiKey, implode(',', $this->libraries), $callback);
+            $output = sprintf('<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&callback=%s"%s%s></script>',
+                              $this->apiKey, implode(',', $this->libraries), $callback, $async ? ' async' : '', $defer ? ' defer' : '');
             $this->loaded = true;
         }
 
