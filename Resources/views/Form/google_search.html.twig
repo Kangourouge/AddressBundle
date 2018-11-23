@@ -1,36 +1,79 @@
 {% block google_search_widget %}
+    {% set attr = attr|merge({autocomplete:'off'}) %}
+
     {{ block('form_widget') }}
 
     <script type="text/javascript">
         (function(){
-            var locationInput = document.getElementById('{{ form.location.vars.id }}');
-            var placeInput = document.getElementById('{{ form.place.vars.id }}');
-
-            locationInput.addEventListener('place_changed', onPlaceChange);
-            locationInput.addEventListener('keyup', onReset);
-            locationInput.addEventListener('reset', onReset);
+            let inputs = {
+                location: document.getElementById('{{ form.location.vars.id }}'),
+                place: document.getElementById('{{ form.place.vars.id }}'),
+            };
 
             function onPlaceChange(event) {
-                event.preventDefault();
-                var googlePlace = event.target.googleAutocomplete.getPlace();
-
-                var place = {};
-                place['address_components'] = googlePlace.address_components;
-                place['formatted_address'] = googlePlace.formatted_address;
-                place['coordinate'] = {};
-                place['coordinate']['latitude'] = googlePlace.geometry.location.lat();
-                place['coordinate']['longitude'] = googlePlace.geometry.location.lng();
-                place['types'] = googlePlace.types;
-                place['vicinity'] = googlePlace.vicinity;
-
-                placeInput.value = JSON.stringify(place);
+                inputs.place.value = prepareData(event.target.autocompleteData.getPlace());
             }
 
-            function onReset(event) {
-                event.preventDefault();
-                placeInput.value = '';
+            function prepareData(data) {
+                let place = {
+                    address_components: data.address_components,
+                    formatted_address: data.formatted_address,
+                    address_components: data.address_components,
+                    address_components: data.address_components,
+                    address_components: data.address_components,
+                    coordinate: {
+                        latitude: data.geometry ? data.geometry.location.lat() : 0,
+                        longitude: data.geometry ? data.geometry.location.lng() : 0
+                    },
+                    types: data.types,
+                    vicinity: data.vicinity
+                };
+
+                return JSON.stringify(place);
             }
+
+            function putFirstPlace() {
+                let results = document.getElementsByClassName('pac-item');
+                if (results === undefined || results.length === 0) {
+                    return false;
+                }
+                let firstResult = results[0].childNodes;
+                let placeName = firstResult[1].textContent;
+                let placeAddress = firstResult[2].textContent;
+                let geocoder = new google.maps.Geocoder();
+
+                geocoder.geocode({'address': placeName + ' ' + placeAddress}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            inputs.location.value = results[0].formatted_address;
+                            inputs.place.value = prepareData(results[0]);
+                        }
+
+                        return results;
+                    }
+                });
+
+                return false;
+            }
+
+            function handleKeys(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+
+                    return putFirstPlace();
+                }
+
+                reset();
+            }
+
+            function reset() {
+                inputs.place.value = '';
+            }
+
+            inputs.location.addEventListener('place_changed', onPlaceChange);
+            inputs.location.addEventListener('keydown', handleKeys);
+            inputs.location.addEventListener('keyup', handleKeys);
+            inputs.location.addEventListener('reset', reset);
         })();
     </script>
-
 {% endblock %}

@@ -3,8 +3,8 @@
 namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use EMC\FileinputBundle\Entity\FileInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -38,17 +38,39 @@ class Country implements CountryInterface
     protected $flag;
 
     /**
-     * @return string
+     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\NationalityInterface", inversedBy="countries", cascade={"persist", "merge", "detach"})
+     * @ORM\JoinColumn(name="nationality_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
-    public function __toString()
+    protected $nationality;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" : 0})
+     * @var boolean
+     */
+    protected $prefered;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default" : 1})
+     * @var boolean
+     */
+    protected $active;
+
+    public function __construct()
     {
-        return $this->name;
+        $this->active = true;
+        $this->prefered = false;
     }
 
     /**
-     * Get id
-     *
-     * @return integer
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return (string)$this->name;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -56,11 +78,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setName($name)
     {
@@ -70,9 +88,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -80,11 +96,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set flag
-     *
-     * @param FileInterface|null $flag
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setFlag(FileInterface $flag = null)
     {
@@ -94,9 +106,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get flag
-     *
-     * @return FileInterface
+     * {@inheritdoc}
      */
     public function getFlag()
     {
@@ -104,11 +114,7 @@ class Country implements CountryInterface
     }
 
     /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Country
+     * {@inheritdoc}
      */
     public function setCode($code)
     {
@@ -118,12 +124,76 @@ class Country implements CountryInterface
     }
 
     /**
-     * Get code
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getCode()
     {
-        return $this->code;
+        return strtolower($this->code);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNationality()
+    {
+        return $this->nationality;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNationality(NationalityInterface $nationality)
+    {
+        $this->nationality = $nationality;
+
+        $nationality->addCountry($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrefered($prefered)
+    {
+        $this->prefered = $prefered;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrefered()
+    {
+        return $this->prefered;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPrefered()
+    {
+        return $this->getPrefered();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isActive()
+    {
+        return $this->getActive();
     }
 }

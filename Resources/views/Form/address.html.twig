@@ -1,136 +1,196 @@
 {% block address_widget %}
-    {% spaceless %}
-        {% set attr = attr|merge({'autocomplete':'off'}) %}
+    {% set attr = attr|merge({'autocomplete':'false'}) %}
 
-        {{ block('form_widget_compound') }}
+    {{ block('form_widget_compound') }}
 
-        <p class="text text-warning address-approximate hide">
-            {{ 'approximative'|trans() }}
-        </p>
+    {% block map %}
+        <div id="map_wrapper_{{ form.vars.id }}" style="display: none;">
+            <div class="alert alert-warning" role="alert">
+                {{ 'approximative'|trans({}, 'messages') }}
+            </div>
+            <div id="map_{{ form.vars.id }}" style="width:100%;"></div>
+        </div>
+    {% endblock %}
 
-        <script type="text/javascript">
-            (function () {
-                var fields = ['postalCode', 'address1', 'address2', 'city', 'department', 'region', 'latitude', 'longitude'];
-                var address = document.getElementById('{{ form.vars.id }}');
-                var name = document.getElementById('{{ form.name.vars.id }}');
-                var address1 = document.getElementById('{{ form.address1.vars.id }}');
-                var postalCode = document.getElementById('{{ form.postalCode.vars.id }}');
-                var approximate = document.getElementById('{{ form.approximate.vars.id }}');
-                var mapping = {
-                    address1: address1,
-                    address2: document.getElementById('{{ form.address2.vars.id }}'),
-                    postalCode: postalCode,
-                    city: document.getElementById('{{ form.city.vars.id }}'),
-                    department: document.getElementById('{{ form.department.vars.id }}'),
-                    region: document.getElementById('{{ form.region.vars.id }}'),
-                    latitude: document.getElementById('{{ form.latitude.vars.id }}'),
-                    longitude: document.getElementById('{{ form.longitude.vars.id }}')
-                };
+    <script type="text/javascript">
+        (function () {
+            let askPreciseCoordinates = '{{ ask_precise_coordinates }}';
+            let map = document.getElementById('map_{{ form.vars.id }}');
+            let mapWrapper = document.getElementById('map_wrapper_{{ form.vars.id }}');
+            let inputs = {
+                address1:    document.getElementById('{{ form.address1.vars.id }}'),
+                address2:    document.getElementById('{{ form.address2.vars.id }}'),
+                postalCode:  document.getElementById('{{ form.postalCode.vars.id }}'),
+                city:        document.getElementById('{{ form.city.vars.id }}'),
+                latitude:    document.getElementById('{{ form.latitude.vars.id }}'),
+                longitude:   document.getElementById('{{ form.longitude.vars.id }}'),
+                department:  document.getElementById('{{ form.department.vars.id }}'),
+                region:      document.getElementById('{{ form.region.vars.id }}'),
+                approximate: document.getElementById('{{ form.approximate.vars.id }}'),
+            };
 
-                function onPlaceChange(event) {
-                    var isApproximate = event.target === postalCode;
-                    var _fields = isApproximate ? fields : [];
+            function onPlaceChange(event) {
+                hideMap();
+                let isApproximate = (event.target === inputs.city);
 
-                    event.preventDefault();
-                    approximate.value = isApproximate ? 1 : 0;
+                for (let field in inputs) {
                     if (isApproximate) {
-                        address.nextElementSibling.classList.remove('hide');
-                    } else {
-                        address.nextElementSibling.classList.add('hide');
+                        if ('address1' === field) {
+                            continue; {# Keep address on city update #}
+                        }
                     }
-                    update(event.target.googleAutocomplete, _fields);
+
+                    inputs[field].value = handleComponentValue(field, event.target.autocompleteData);
                 }
 
-                function onReset(event) {
-                    var _fields = event.target === postalCode ? fields : [];
+                handleApproximate(isApproximate, event.target.autocompleteData)
+            }
 
+            function handleApproximate(isApproximate) {
+                inputs.approximate.value = isApproximate ? 1 : 0;
+
+                if (isApproximate && askPreciseCoordinates) {
+                    mapWrapper.style.display = isApproximate ? '' : 'none';
+                    let latitude = inputs.latitude.value;
+                    let longitude = inputs.longitude.value;
+                    let position = {lat: parseFloat(latitude), lng: parseFloat(longitude)};
+
+                    let gmap = new google.maps.Map(map, {
+                        zoom: 13,
+                        streetViewControl: false,
+                        center: position,
+                        mapTypeControl: false,
+                    });
+
+                    map.style.height = '250px';
+
+                    let marker = new google.maps.Marker({
+                        map: gmap,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP,
+                        position: position,
+                    });
+
+                    google.maps.event.addListener(marker, 'dragend', function () {
+                        inputs.latitude.value = this.getPosition().lat();
+                        inputs.longitude.value = this.getPosition().lng();
+                        inputs.approximate.value = 0;
+                    });
+                }
+            }
+
+            function handleComponentValue(field, autocomplete) {
+                let place = autocomplete.getPlace();
+                let components = place.address_components;
+                let value = '';
+
+                console.log(components);
+
+                switch (field) {
+                    case 'address1':
+                        let address1 = getComponentValue(['sublocality_level_1', 'premise'], 'short_name', components);
+
+                        if (address1) {
+                            value = address1;
+                        } else {
+                            value = getComponentValue('route', 'short_name', components);
+                            let street_number = getComponentValue('street_number', 'short_name', components);
+
+                            if (street_number) {
+                                value = street_number + ', ' + value;
+                            }
+                        }
+                        return value;
+                    case 'postalCode':
+                        return getComponentValue('postal_code', 'short_name', components);
+                    case 'city':
+                        return getComponentValue(['locality', 'postal_town'], 'short_name', components);
+                    case 'department':
+                        return getComponentValue('administrative_area_level_2', 'long_name', components);
+                    case 'region':
+                        return getComponentValue('administrative_area_level_1', 'long_name', components);
+                    case 'latitude':
+                        return place.geometry ? place.geometry.location.lat() : 0;
+                    case 'longitude':
+                        return place.geometry ? place.geometry.location.lng() : 0;
+                }
+
+                return value;
+            }
+
+            function getComponentValue(types, format, components) {
+                if (components) {
+                    for (let i = 0; i < components.length; i++) {
+                        if (typeof types === 'string') {
+                            types = [types];
+                        }
+                        for (let n = 0; n < types.length; n++) {
+                            for (let t = 0; t < components[i].types.length; t++) {
+                                if (components[i].types[t] === types[n]) {
+                                    return components[i][format];
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                return '';
+            }
+
+            function handleKeys(event) {
+                if (event.keyCode === 13) {
                     event.preventDefault();
-                    reset(event.target, _fields);
+                }
+            }
+
+            function reset() {
+                for (let field in inputs) {
+                    inputs[field].value = ''
                 }
 
-                function onResetAll(element, fields) {
-                    return reset(element, fields, true);
-                }
+                hideMap();
+            }
 
-                function reset(element, fields, force) {
-                    for (var field in mapping) {
-                        if (force !== true) {
-                            if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
-                                continue;
+            function hideMap()
+            {
+                mapWrapper.style.display = 'none';
+            }
+
+            let selectFirstOnEnter = function (input) {
+                let _addEventListener = (input.addEventListener) ? input.addEventListener : input.attachEvent;
+
+                function addEventListenerWrapper(type, listener) {
+                    if (type == 'keydown') {
+                        let origListener = listener;
+                        listener = function (event) {
+                            let addressList = document.querySelectorAll('.pac-item-selected').length > 0;
+                            if (event.which == 13 && !addressList) {
+                                origListener.apply(input, [new KeyboardEvent('keypress', {keyCode: 40})]);
                             }
-                            if (mapping[field] === element) {
-                                continue;
-                            }
-                            if (field === 'name') {
-                                continue;
-                            }
-                        }
-                        mapping[field].value = '';
-                        mapping[field].setAttribute('value', '');
+                            origListener.apply(input, [event]);
+                        };
                     }
+                    _addEventListener.apply(input, [type, listener]);
                 }
 
-                function update(autocomplete, fields) {
-                    var place = autocomplete.getPlace();
-                    var components = place.address_components;
-                    var value;
-
-                    for (var field in mapping) {
-                        if (typeof(fields) === 'object' && fields.constructor === Array && fields.length > 0 && fields.indexOf(field) < 0) {
-                            continue;
-                        }
-                        value = '';
-                        switch(field) {
-                            case 'name':
-                                if (place.types[0] !== 'street_address' && place.name) {
-                                    value = place.name;
-                                } else {
-                                    value = mapping[field].value;
-                                }
-                                break;
-                            case 'address1':
-                                sublocality_level_1 = autocomplete.getAddressValue('sublocality_level_1', 'short_name', components)
-                                if (sublocality_level_1) {
-                                    value = sublocality_level_1;
-                                } else {
-                                    value = autocomplete.getAddressValue('route', 'short_name', components);
-                                    street_number = autocomplete.getAddressValue('street_number', 'short_name', components);
-                                    if (street_number) {
-                                        value = street_number + ', ' + value;
-                                    }
-                                }
-                                break;
-                            case 'postalCode':
-                                value = autocomplete.getAddressValue('postal_code', 'short_name', components);
-                                break;
-                            case 'city':
-                                value = autocomplete.getAddressValue('locality', 'short_name', components);
-                                break;
-                            case 'department':
-                                value = autocomplete.getAddressValue('administrative_area_level_2', 'long_name', components);
-                                break;
-                            case 'region':
-                                value = autocomplete.getAddressValue('administrative_area_level_1', 'long_name', components);
-                                break;
-                            case 'latitude':
-                                value = place.geometry.location.lat();
-                                break;
-                            case 'longitude':
-                                value = place.geometry.location.lng();
-                                break;
-                        }
-                        mapping[field].value = value;
-                        mapping[field].setAttribute('value', value);
-                    }
+                if (input.addEventListener) {
+                    input.addEventListener = addEventListenerWrapper;
+                } else if (input.attachEvent) {
+                    input.attachEvent = addEventListenerWrapper;
                 }
+            };
 
-                address1.addEventListener('place_changed', onPlaceChange);
-                address1.addEventListener('keyup', onReset);
-                address1.addEventListener('reset', onResetAll);
-                postalCode.addEventListener('place_changed', onPlaceChange);
-                postalCode.addEventListener('keyup', onReset);
-                postalCode.addEventListener('reset', onResetAll);
-            })();
-        </script>
-    {% endspaceless %}
+            function addAutocompleteEventListeners(element)
+            {
+                element.addEventListener('place_changed', onPlaceChange);
+                element.addEventListener('keypress', handleKeys);
+                element.addEventListener('reset', reset);
+                selectFirstOnEnter(element);
+            }
+
+            addAutocompleteEventListeners(inputs.address1);
+            addAutocompleteEventListeners(inputs.city);
+        })();
+    </script>
 {% endblock %}

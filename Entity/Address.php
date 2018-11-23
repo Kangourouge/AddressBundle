@@ -93,7 +93,7 @@ class Address implements AddressInterface
     protected $longitude;
 
     /**
-     * @ORM\Column(type="boolean", name="is_approximate")
+     * @ORM\Column(type="boolean", name="is_approximate", options={"default": true})
      * @var bool
      */
     protected $approximate;
@@ -119,9 +119,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get id
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -129,11 +127,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setName($name)
     {
@@ -143,9 +137,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -153,11 +145,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set address1
-     *
-     * @param string $address1
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setAddress1($address1)
     {
@@ -167,9 +155,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get address1
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getAddress1()
     {
@@ -177,11 +163,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set address2
-     *
-     * @param string $address2
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setAddress2($address2)
     {
@@ -191,9 +173,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get address2
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getAddress2()
     {
@@ -201,11 +181,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set postalCode
-     *
-     * @param string $postalCode
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setPostalCode($postalCode)
     {
@@ -215,9 +191,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get postalCode
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPostalCode()
     {
@@ -225,11 +199,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set city
-     *
-     * @param string $city
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setCity($city)
     {
@@ -239,9 +209,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get city
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getCity()
     {
@@ -249,11 +217,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set formattedAddress
-     *
-     * @param string $formattedAddress
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setFormattedAddress($formattedAddress)
     {
@@ -263,9 +227,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get formattedAddress
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFormattedAddress()
     {
@@ -273,11 +235,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set longitude
-     *
-     * @param float $longitude
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setLongitude($longitude)
     {
@@ -287,9 +245,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get longitude
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getLongitude()
     {
@@ -297,11 +253,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set latitude
-     *
-     * @param float $latitude
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setLatitude($latitude)
     {
@@ -311,9 +263,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get latitude
-     *
-     * @return float
+     * {@inheritdoc}
      */
     public function getLatitude()
     {
@@ -321,11 +271,15 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set country
-     *
-     * @param CountryInterface $country
-     *
-     * @return Address
+     * {@inheritdoc}
+     */
+    public function getCoordinates()
+    {
+        return new CoordinatesModel($this->getLatitude(), $this->getLongitude());
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setCountry(CountryInterface $country)
     {
@@ -335,9 +289,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get country
-     *
-     * @return CountryInterface
+     * {@inheritdoc}
      */
     public function getCountry()
     {
@@ -345,11 +297,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Set approximate
-     *
-     * @param boolean $approximate
-     *
-     * @return Address
+     * {@inheritdoc}
      */
     public function setApproximate($approximate)
     {
@@ -359,9 +307,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * Get approximate
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isApproximate()
     {
@@ -369,7 +315,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDepartment()
     {
@@ -377,8 +323,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * @param string $department
-     * @return $this
+     * {@inheritdoc}
      */
     public function setDepartment($department)
     {
@@ -388,7 +333,7 @@ class Address implements AddressInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getRegion()
     {
@@ -396,21 +341,12 @@ class Address implements AddressInterface
     }
 
     /**
-     * @param string $region
-     * @return $this
+     * {@inheritdoc}
      */
     public function setRegion($region)
     {
         $this->region = $region;
 
         return $this;
-    }
-
-    /**
-     * @return CoordinatesModel
-     */
-    public function getCoordinate()
-    {
-        return new CoordinatesModel($this->getLatitude(), $this->getLongitude());
     }
 }

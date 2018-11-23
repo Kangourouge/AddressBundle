@@ -1,0 +1,16 @@
+easy_admin:
+    entities:
+        Nationality:
+            class: 'KRG\AddressBundle\Entity\NationalityInterface'
+            list:
+                fields:
+                    - { property: 'name' }
+                sort: ['name', 'ASC']
+            edit:
+                fields:
+                    - { type: 'group' }
+                    - { property: 'name' }
+            new:
+                fields:
+                    - { type: 'group' }
+                    - { property: 'name' }

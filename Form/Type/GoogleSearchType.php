@@ -2,7 +2,8 @@
 
 namespace KRG\AddressBundle\Form\Type;
 
-use KRG\AddressBundle\Model\CoordinatesModel;
+use Doctrine\ORM\EntityManagerInterface;
+use KRG\AddressBundle\Entity\CountryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,17 +12,28 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class GoogleSearchType extends AbstractType
 {
+    /** @var EntityManagerInterface */
+    protected $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $countries = $this->entityManager->getRepository(CountryInterface::class)->findBy(['active' => 1]);
+        $countryCodes = array_map(function(CountryInterface $country) { return $country->getCode(); }, $countries);
+
         $builder
-            ->add('location', GooglePlaceType::class, array(
-                'required'               => isset($options['required']) ? $options['required'] : false,
-                'component_restrictions' => $options['component_restrictions'],
-                'types'                  => $options['types'],
-                'address_type'           => $options['address_type'],
-                'address_format'         => $options['address_format'],
-                'data'                   => isset($options['data']) ? $options['data'] : null,
-            ))
+            ->add('location', GooglePlaceType::class, [
+                'required'               => $options['required'],
+                'data'                   => $options['data'],
+                'types'                  => ['geocode'],
+                'component_restrictions' => [
+                    'country' => $countryCodes,
+                ],
+            ])
             ->add('place', HiddenType::class);
 
         $builder->addModelTransformer(new GooglePlaceTransformer());
@@ -29,21 +41,15 @@ class GoogleSearchType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'required'       => false,
+            'data'           => null,
+            'label_format'   => 'form.address.%name%',
+        ]);
+    }
 
-        $resolver
-            ->setRequired(array('component_restrictions'))
-            ->setDefaults(array(
-                'component_restrictions' => array('country' => array('fr', 'be')),
-                'location'               => null,
-                'address_type'           => null,
-                'address_format'         => 'long_name',
-                'types'                  => array('geocode'),
-            ))
-            ->setAllowedType('component_restrictions', 'array')
-            ->setAllowedType('types', 'array')
-            ->setAllowedType('location', array('null', CoordinatesModel::class))
-            ->setAllowedType('address_type', array('null', 'string'))
-            ->setAllowedType('address_format', 'string');
+    public function getBlockPrefix()
+    {
+        return 'google_search';
     }
 }

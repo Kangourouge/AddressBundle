@@ -1,13 +1,18 @@
 services:
-    KRG\AddressBundle\Helper\ApiHelper:
-        - '%krg_address.google_maps.api_key%'
-        - ['places']
-        - '%locale%'
-
-    KRG\AddressBundle\Form\Type\GooglePlaceType:
+    _defaults:
         autowire: true
-        tags: [form.type]
+        autoconfigure: true
+        public: false
+        bind:
+            $apiKey: '%krg_address.google_maps.api_key%'
+            $locale: '%locale%'
+            $libraries: ['places']
 
-    KRG\AddressBundle\Form\Type\AddressType:
-        autowire: true
-        tags: [form.type]
+    KRG\AddressBundle\Form\Type\:
+        resource: '../../Form/Type'
+        public: true
+        tags:
+            - { name: form.type }
+
+    KRG\AddressBundle\Helper\:
+        resource: '../../Helper'

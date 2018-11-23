@@ -7,9 +7,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
@@ -19,8 +16,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('google_maps')
                     ->children()
-                        ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('country')->defaultValue(null)->end()
+                        ->scalarNode('api_key')->isRequired()->isRequired()->end()
                     ->end()
                 ->end()
             ->end();

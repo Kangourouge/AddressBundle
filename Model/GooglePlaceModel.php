@@ -3,23 +3,16 @@
 namespace KRG\AddressBundle\Model;
 
 use KRG\AddressBundle\Entity\AddressInterface;
-use Ivory\GoogleMap\Base\Coordinate;
 
 class GooglePlaceModel
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $data;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $normalizedData;
 
-    /**
-     * @var AddressInterface
-     */
+    /** @var AddressModel */
     private $address;
 
     function __construct(array $data)
@@ -35,11 +28,17 @@ class GooglePlaceModel
         return $this->data;
     }
 
+    /**
+     * @return string
+     */
     public function getFormattedAddress()
     {
         return isset($this->data['formatted_address']) ? $this->data['formatted_address'] : '';
     }
 
+    /**
+     * @return string|null
+     */
     public function getType()
     {
         if (isset($this->data['types'][0])) {
@@ -62,17 +61,16 @@ class GooglePlaceModel
         return null;
     }
 
-    public function getCoordinate()
+    /**
+     * @return CoordinatesModel|null
+     */
+    public function getCoordinates()
     {
         if (isset($this->data['coordinate']) || isset($this->data['geometry']['location'])) {
             $latitude = $this->data['coordinate']['latitude'] ?? $this->data['geometry']['location']['lat'];
             $longitude = $this->data['coordinate']['longitude'] ?? $this->data['geometry']['location']['lng'];
 
-            $coordinate = new Coordinate();
-            $coordinate->setLatitude($latitude);
-            $coordinate->setLongitude($longitude);
-
-            return $coordinate;
+            return new CoordinatesModel($latitude, $longitude);
         }
 
         return null;
@@ -97,6 +95,9 @@ class GooglePlaceModel
         return $this->normalizedData[$property][$name] = null;
     }
 
+    /**
+     * @return AddressModel
+     */
     public function getAddress()
     {
         if ($this->address instanceof AddressInterface) {
@@ -104,12 +105,13 @@ class GooglePlaceModel
         }
 
         $this->address = new AddressModel();
-        $this->address->setCity($this->getProperty('locality', 'long_name'));
-        $this->address->setRegion($this->getProperty('administrative_area_level_1', 'long_name'));
-        $this->address->setDepartment($this->getProperty('administrative_area_level_2', 'long_name'));
-        $this->address->setPostalCode($this->getProperty('postal_code', 'long_name'));
+        $this->address
+            ->setCity($this->getProperty('locality', 'long_name'))
+            ->setRegion($this->getProperty('administrative_area_level_1', 'long_name'))
+            ->setDepartment($this->getProperty('administrative_area_level_2', 'long_name'))
+            ->setPostalCode($this->getProperty('postal_code', 'long_name'))
+            ->setAddress1($this->getProperty('route', 'long_name'));
 
-        $this->address->setAddress1($this->getProperty('route', 'long_name'));
         if ($this->getProperty('street_number', 'long_name') !== null) {
             $this->address->setAddress1($this->getProperty('street_number', 'long_name').' '.$this->getProperty('route', 'long_name'));
         }
@@ -117,6 +119,9 @@ class GooglePlaceModel
         return $this->address;
     }
 
+    /**
+     * @return string
+     */
     public function getVicinity()
     {
         if (key_exists('vicinity', $this->data)) {

@@ -3,9 +3,10 @@
 namespace KRG\AddressBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use KRG\AddressBundle\Model\CoordinatesModel;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class CoordinateType extends AbstractType
 {
@@ -18,8 +19,9 @@ class CoordinateType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'label_format' => 'form.tag.%name%',
-        ));
+        $resolver->setDefaults([
+            'data_class'   => CoordinatesModel::class,
+            'label_format' => 'form.address.%name%',
+        ]);
     }
 }

@@ -164,5 +164,5 @@ interface AddressInterface
 	/**
 	 * @return CoordinatesModel
 	 */
-	public function getCoordinate();
+	public function getCoordinates();
 }

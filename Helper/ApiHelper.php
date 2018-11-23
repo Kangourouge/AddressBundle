@@ -2,41 +2,42 @@
 
 namespace KRG\AddressBundle\Helper;
 
-class ApiHelper
+class ApiHelper implements ApiHelperInterface
 {
-    /**
-     * @var string
-     */
-    private $apiKey;
+    /** @var string */
+    protected $apiKey;
 
-    /**
-     * @var array
-     */
-    private $libraries;
+    /** @var array */
+    protected $libraries;
 
-    /**
-     * @var string
-     */
-    private $locale;
+    /** @var string */
+    protected $locale;
 
-    private $isLoaded = false;
+    /** @var boolean */
+    protected $loaded;
 
-    function __construct($apiKey, array $libraries, $locale)
+    function __construct(string $apiKey, array $libraries, string $locale)
     {
         $this->apiKey = $apiKey;
         $this->libraries = $libraries;
         $this->locale = $locale;
+        $this->loaded = false;
     }
 
-    public function render()
+    public function render($callback = null, $async = true, $defer = true)
     {
-        if (false === $this->isLoaded) {
-            $this->isLoaded = true;
+        if (false === $this->loaded) {
+            $this->loaded = true;
 
-            return sprintf('<script src="https://maps.googleapis.com/maps/api/js?key=%s&language=%s&libraries=%s" async defer></script>',
+            return sprintf(
+                '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=%s&libraries=%s&language=%s&callback=%s"%s%s></script>',
                 $this->apiKey,
+                implode(',', $this->libraries),
                 $this->locale,
-                implode(',', $this->libraries));
+                $callback,
+                $async ? ' async' : '',
+                $defer ? ' defer' : ''
+            );
         }
 
         return '';

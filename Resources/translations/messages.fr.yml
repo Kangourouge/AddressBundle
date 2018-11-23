@@ -1,12 +1,13 @@
 form:
     address:
-        address: Votre adresse
-        name: Raison sociale/Dénomination
-        address1: Adresse ligne 1
-        address2: Adresse ligne 2
-        postalCode: Code Postal
-        city: Ville
-        country: Pays
-        department: Departement
+        address: 'Votre adresse'
+        location: 'Adresse'
+        name: 'Raison sociale/Dénomination'
+        address1: 'Adresse ligne 1'
+        address2: 'Adresse ligne 2'
+        postalCode: 'Code Postal'
+        city: 'Ville'
+        country: 'Pays'
+        search: 'Recherche'
 
-approximative: La géolocalisation de cette adresse est approximative.
+approximative: 'La géolocalisation de cette adresse est approximative. Merci de préciser votre adresse en déplaçant le marqueur.'

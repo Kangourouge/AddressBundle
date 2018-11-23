@@ -9,13 +9,14 @@ easy_admin:
                     - { property: 'prefered' }
                     - { property: 'active' }
                 sort: ['name', 'ASC']
-            edit:
+            form:
                 fields:
                     - { type: 'group' }
                     - { property: 'name' }
                     - { property: 'code' }
                     - { property: 'flag' }
-
+                    - { property: 'nationality' }
                     - { type: 'group' }
                     - { property: 'prefered' }
                     - { property: 'active' }
+                    - { property: 'code' }

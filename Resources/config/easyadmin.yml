@@ -7,5 +7,7 @@ easy_admin:
             -
                 label: 'Address'
                 priority: 4
+                roles: ['ROLE_ADDRESS']
                 children:
                     - { entity: 'Country', icon: 'globe' }
+                    - { entity: 'Nationality', icon: 'flag-o' }

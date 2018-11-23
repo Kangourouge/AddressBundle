@@ -1,13 +1,13 @@
 form:
     address:
-        address: Address
-        name: Name / Organisation
-        address1: Address line 1
-        address2: Address line 2
-        postalCode: Postal Code
-        city: City
-        country: Country
-        department: Department
-        region: Region
+        address: 'Address'
+        location: 'Location'
+        name: 'Name / Organisation'
+        address1: 'Address line 1'
+        address2: 'Address line 2'
+        postalCode: 'Postal code'
+        city: 'City'
+        country: 'Country'
+        search: 'Search'
 
-approximative: The address's geolocation is approximative.
+approximative: 'The address''s geolocation is approximative. Please precise your location by dragging the marker.'

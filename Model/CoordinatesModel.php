@@ -2,16 +2,12 @@
 
 namespace KRG\AddressBundle\Model;
 
-class CoordinatesModel
+final class CoordinatesModel
 {
-    /**
-     * @var double
-     */
+    /** @var double */
     private $latitude;
 
-    /**
-     * @var double
-     */
+    /** @var double */
     private $longitude;
 
     /**
@@ -20,7 +16,7 @@ class CoordinatesModel
      */
     public function __construct($latitude, $longitude)
     {
-        $this->latitude = $latitude;
+        $this->latitude  = $latitude;
         $this->longitude = $longitude;
     }
 

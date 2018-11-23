@@ -14,9 +14,7 @@ AppKernel
 public function registerBundles()
 {
     $bundles = array(
-        // ...
         new KRG\AddressBundle\KRGAddressBundle(),
-        // ...
     );
 }
 ```
@@ -37,6 +35,7 @@ doctrine:
         resolve_target_entities:
             KRG\AddressBundle\Entity\AddressInterface: AppBundle\Entity\Address
             KRG\AddressBundle\Entity\CountryInterface: AppBundle\Entity\Country
+            KRG\AddressBundle\Entity\NationalityInterface: AppBundle\Entity\Nationality
 ```
 
 Entity
@@ -51,7 +50,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="address")
+ * @ORM\Table
  */
 class Address extends \KRG\AddressBundle\Entity\Address
 {
@@ -67,9 +66,33 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="country")
+ * @ORM\Table
  */
 class Country extends \KRG\AddressBundle\Entity\Country
 {
 }
+```
+
+```php
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table
+ */
+class Nationality extends \KRG\AddressBundle\Entity\Nationality
+{
+}
+```
+
+EMC\FileinputBundle dependency
+
+```
+ ->add('address', AddressType::class, [
+    'label_format' => null, // Without labels
+]);
 ```
