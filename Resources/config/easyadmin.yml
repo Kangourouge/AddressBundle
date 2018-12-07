@@ -10,4 +10,3 @@ easy_admin:
                 roles: ['ROLE_ADDRESS']
                 children:
                     - { entity: 'Country', icon: 'globe' }
-                    - { entity: 'Nationality', icon: 'flag-o' }

@@ -62,22 +62,6 @@ interface CountryInterface
     public function getCode();
 
     /**
-     * Get nationality
-     *
-     * @return NationalityInterface
-     */
-    public function getNationality();
-
-    /**
-     * Set nationality
-     *
-     * @param NationalityInterface $nationality
-     *
-     * @return Country
-     */
-    public function setNationality(NationalityInterface $nationality);
-
-    /**
      * Set prefered
      *
      * @param string $prefered
