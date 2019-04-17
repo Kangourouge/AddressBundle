@@ -27,6 +27,22 @@ class GoogleMaps extends BaseGoogleMaps
     private $apiKey;
 
     /**
+     * @param HttpAdapterInterface $adapter An HTTP adapter
+     * @param string               $locale  A locale (optional)
+     * @param string               $region  Region biasing (optional)
+     * @param bool                 $useSsl  Whether to use an SSL connection (optional)
+     * @param string               $apiKey  Google Geocoding API key (optional)
+     */
+    public function __construct(HttpAdapterInterface $adapter, $locale = null, $region = null, $useSsl = false, $apiKey = null)
+    {
+        parent::__construct($adapter, $locale);
+
+        $this->region = $region;
+        $this->useSsl = $useSsl;
+        $this->apiKey = $apiKey;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function search($address)
@@ -89,5 +105,27 @@ class GoogleMaps extends BaseGoogleMaps
         }
 
         return $json;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return string query with extra params
+     */
+    protected function buildQuery($query)
+    {
+        if (null !== $this->getLocale()) {
+            $query = sprintf('%s&language=%s', $query, $this->getLocale());
+        }
+
+        if (null !== $this->region) {
+            $query = sprintf('%s&region=%s', $query, $this->region);
+        }
+
+        if (null !== $this->apiKey) {
+            $query = sprintf('%s&key=%s', $query, $this->apiKey);
+        }
+
+        return $query;
     }
 }
