@@ -1,4 +1,6 @@
-# AddressBundle
+# [LEGACY] AddressBundle
+
+**abandoned!**
 
 Configuration
 -------------
