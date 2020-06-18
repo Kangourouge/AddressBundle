@@ -21,5 +21,6 @@
       "KRG\\AddressBundle": ""
     }
   },
-  "target-dir" : "KRG/AddressBundle"
+  "target-dir": "KRG/AddressBundle",
+  "abandoned": true
 }
