@@ -6,163 +6,47 @@ use KRG\AddressBundle\Model\CoordinatesModel;
 
 interface AddressInterface
 {
-	/**
-	 * Get id
-	 *
-	 * @return integer
-	 */
-	public function getId();
+	public function getId(): int;
 
-	/**
-	 * Set address1
-	 *
-	 * @param string $address1
-	 *
-	 * @return Address
-	 */
-	public function setAddress1($address1);
+	public function setAddress1(string $address1): self;
 
-	/**
-	 * Get address1
-	 *
-	 * @return string
-	 */
-	public function getAddress1();
+	public function getAddress1(): string;
 
-	/**
-	 * Set address2
-	 *
-	 * @param string $address2
-	 *
-	 * @return Address
-	 */
-	public function setAddress2($address2);
+	public function setAddress2(string $address2): self;
 
-	/**
-	 * Get address2
-	 *
-	 * @return string
-	 */
-	public function getAddress2();
+	public function getAddress2(): string;
 
-	/**
-	 * Set postalCode
-	 *
-	 * @param string $postalCode
-	 *
-	 * @return Address
-	 */
-	public function setPostalCode($postalCode);
+	public function setPostalCode(string $postalCode): self;
 
-	/**
-	 * Get postalCode
-	 *
-	 * @return string
-	 */
-	public function getPostalCode();
+	public function getPostalCode(): string;
 
-	/**
-	 * Set city
-	 *
-	 * @param string $city
-	 *
-	 * @return Address
-	 */
-	public function setCity($city);
+	public function setCity(string $city): self;
 
-	/**
-	 * Get city
-	 *
-	 * @return string
-	 */
-	public function getCity();
+	public function getCity(): string;
 
-	/**
-	 * Set longitude
-	 *
-	 * @param float $longitude
-	 *
-	 * @return Address
-	 */
-	public function setLongitude($longitude);
+	public function setLongitude(float $longitude): self;
 
-	/**
-	 * Get longitude
-	 *
-	 * @return float
-	 */
-	public function getLongitude();
+	public function getLongitude(): float;
 
-	/**
-	 * Set latitude
-	 *
-	 * @param float $latitude
-	 */
-	public function setLatitude($latitude);
+	public function setLatitude(float $latitude): self;
 
-	/**
-	 * Get latitude
-	 *
-	 * @return float
-	 */
-	public function getLatitude();
+	public function getLatitude(): float;
 
-	/**
-	 * Set country
-	 *
-	 * @param CountryInterface $country
-	 *
-	 * @return Address
-	 */
-	public function setCountry(CountryInterface $country);
+	public function setCountry(CountryInterface $country): self;
 
-	/**
-	 * Get country
-	 *
-	 * @return CountryInterface
-	 */
-	public function getCountry();
+	public function getCountry(): CountryInterface;
 
-	/**
-	 * Set approximate
-	 *
-	 * @param boolean $approximate
-	 *
-	 * @return Address
-	 */
-	public function setApproximate($approximate);
+	public function setApproximate(bool $approximate): self;
 
-	/**
-	 * Get approximate
-	 *
-	 * @return boolean
-	 */
-	public function isApproximate();
+	public function isApproximate(): bool;
 
-	/**
-	 * @return string
-	 */
-	public function getDepartment();
+	public function getDepartment(): string;
 
-	/**
-	 * @param string $department
-	 * @return $this
-	 */
-	public function setDepartment($department);
+	public function setDepartment(string $department): self;
 
-	/**
-	 * @return string
-	 */
-	public function getRegion();
+	public function getRegion(): string;
 
-	/**
-	 * @param string $region
-	 * @return $this
-	 */
-	public function setRegion($region);
+	public function setRegion(string $region): self;
 
-	/**
-	 * @return CoordinatesModel
-	 */
-	public function getCoordinate();
+	public function getCoordinate(): CoordinatesModel;
 }

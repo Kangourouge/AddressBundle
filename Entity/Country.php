@@ -4,7 +4,6 @@ namespace KRG\AddressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use EMC\FileinputBundle\Entity\FileInterface;
 
 /**
  * @ORM\MappedSuperclass
@@ -20,109 +19,66 @@ class Country implements CountryInterface
 
     /**
      * @Assert\NotBlank
+     *
      * @ORM\Column(type="string", unique=true)
      */
     protected $name;
 
     /**
      * @Assert\NotBlank
+     *
      * @ORM\Column(type="string", length=2)
      */
     protected $code;
 
     /**
-     * @ORM\OneToOne(targetEntity="EMC\FileinputBundle\Entity\FileInterface", cascade={"persist", "merge", "detach"})
+     * @ORM\OneToOne(targetEntity="FileInterface::class", cascade={"persist", "merge", "detach"})
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true)
-     * @var FileInterface
      */
     protected $flag;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Country
-     */
-    public function setName($name)
+    public function setName(string $name): CountryInterface
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set flag
-     *
-     * @param FileInterface|null $flag
-     *
-     * @return Country
-     */
-    public function setFlag(FileInterface $flag = null)
+    public function setFlag(?FileInterface $flag = null): CountryInterface
     {
         $this->flag = $flag;
 
         return $this;
     }
 
-    /**
-     * Get flag
-     *
-     * @return FileInterface
-     */
-    public function getFlag()
+    public function getFlag(): FileInterface
     {
         return $this->flag;
     }
 
-    /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Country
-     */
-    public function setCode($code)
+    public function setCode(string $code): CountryInterface
     {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * Get code
-     *
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }

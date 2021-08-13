@@ -20,6 +20,7 @@ class Address implements AddressInterface
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $name;
@@ -27,12 +28,14 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $address1;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $address2;
@@ -40,6 +43,7 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $postalCode;
@@ -47,6 +51,7 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $city;
@@ -54,6 +59,7 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $department;
@@ -61,19 +67,22 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $region;
 
     /**
-     * @ORM\ManyToOne(targetEntity="KRG\AddressBundle\Entity\CountryInterface", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="CountryInterface::class", fetch="EAGER")
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
+     *
      * @var CountryInterface
      */
     protected $country;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     *
      * @var string
      */
     protected $formattedAddress;
@@ -81,6 +90,7 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="float", nullable=true)
+     *
      * @var float
      */
     protected $latitude;
@@ -88,12 +98,14 @@ class Address implements AddressInterface
     /**
      * @Assert\NotBlank(groups={"Localize"})
      * @ORM\Column(type="float", nullable=true)
+     *
      * @var float
      */
     protected $longitude;
 
     /**
      * @ORM\Column(type="boolean", name="is_approximate")
+     *
      * @var bool
      */
     protected $approximate;
@@ -105,7 +117,7 @@ class Address implements AddressInterface
         $this->approximate = true;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $address = sprintf("%s %s %s %s %s, %s",
             $this->name,
@@ -113,303 +125,162 @@ class Address implements AddressInterface
             $this->address2,
             $this->postalCode,
             $this->city,
-            (string)$this->country);
+            (string) $this->country
+        );
 
-        return (string)preg_replace('/[\ ][\ ]+|\n\n+/', ' ', trim($address));
+        return (string) preg_replace('/[\ ][\ ]+|\n\n+/', ' ', trim($address));
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Address
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set address1
-     *
-     * @param string $address1
-     *
-     * @return Address
-     */
-    public function setAddress1($address1)
+    public function setAddress1(string $address1): AddressInterface
     {
         $this->address1 = $address1;
 
         return $this;
     }
 
-    /**
-     * Get address1
-     *
-     * @return string
-     */
-    public function getAddress1()
+    public function getAddress1(): string
     {
         return $this->address1;
     }
 
-    /**
-     * Set address2
-     *
-     * @param string $address2
-     *
-     * @return Address
-     */
-    public function setAddress2($address2)
+    public function setAddress2(string $address2): AddressInterface
     {
         $this->address2 = $address2;
 
         return $this;
     }
 
-    /**
-     * Get address2
-     *
-     * @return string
-     */
-    public function getAddress2()
+    public function getAddress2(): string
     {
         return $this->address2;
     }
 
-    /**
-     * Set postalCode
-     *
-     * @param string $postalCode
-     *
-     * @return Address
-     */
-    public function setPostalCode($postalCode)
+    public function setPostalCode(string $postalCode): AddressInterface
     {
         $this->postalCode = $postalCode;
 
         return $this;
     }
 
-    /**
-     * Get postalCode
-     *
-     * @return string
-     */
-    public function getPostalCode()
+    public function getPostalCode(): string
     {
         return $this->postalCode;
     }
 
-    /**
-     * Set city
-     *
-     * @param string $city
-     *
-     * @return Address
-     */
-    public function setCity($city)
+    public function setCity(string $city): AddressInterface
     {
         $this->city = $city;
 
         return $this;
     }
 
-    /**
-     * Get city
-     *
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * Set formattedAddress
-     *
-     * @param string $formattedAddress
-     *
-     * @return Address
-     */
-    public function setFormattedAddress($formattedAddress)
+    public function setFormattedAddress(string $formattedAddress): self
     {
         $this->formattedAddress = $formattedAddress;
 
         return $this;
     }
 
-    /**
-     * Get formattedAddress
-     *
-     * @return string
-     */
-    public function getFormattedAddress()
+    public function getFormattedAddress(): string
     {
         return $this->formattedAddress;
     }
 
-    /**
-     * Set longitude
-     *
-     * @param float $longitude
-     *
-     * @return Address
-     */
-    public function setLongitude($longitude)
+    public function setLongitude(float $longitude): AddressInterface
     {
         $this->longitude = $longitude;
 
         return $this;
     }
 
-    /**
-     * Get longitude
-     *
-     * @return float
-     */
-    public function getLongitude()
+    public function getLongitude(): float
     {
         return $this->longitude;
     }
 
-    /**
-     * Set latitude
-     *
-     * @param float $latitude
-     *
-     * @return Address
-     */
-    public function setLatitude($latitude)
+    public function setLatitude(float $latitude): AddressInterface
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    /**
-     * Get latitude
-     *
-     * @return float
-     */
-    public function getLatitude()
+    public function getLatitude(): float
     {
         return $this->latitude;
     }
 
-    /**
-     * Set country
-     *
-     * @param CountryInterface $country
-     *
-     * @return Address
-     */
-    public function setCountry(CountryInterface $country)
+    public function setCountry(CountryInterface $country): AddressInterface
     {
         $this->country = $country;
 
         return $this;
     }
 
-    /**
-     * Get country
-     *
-     * @return CountryInterface
-     */
-    public function getCountry()
+    public function getCountry(): CountryInterface
     {
         return $this->country;
     }
 
-    /**
-     * Set approximate
-     *
-     * @param boolean $approximate
-     *
-     * @return Address
-     */
-    public function setApproximate($approximate)
+    public function setApproximate(bool $approximate): AddressInterface
     {
         $this->approximate = $approximate;
 
         return $this;
     }
 
-    /**
-     * Get approximate
-     *
-     * @return boolean
-     */
-    public function isApproximate()
+    public function isApproximate(): bool
     {
         return $this->approximate;
     }
 
-    /**
-     * @return string
-     */
-    public function getDepartment()
+    public function getDepartment(): string
     {
         return $this->department;
     }
 
-    /**
-     * @param string $department
-     * @return $this
-     */
-    public function setDepartment($department)
+    public function setDepartment(string $department): AddressInterface
     {
         $this->department = $department;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegion()
+    public function getRegion(): string
     {
         return $this->region;
     }
 
-    /**
-     * @param string $region
-     * @return $this
-     */
-    public function setRegion($region)
+    public function setRegion(string $region): AddressInterface
     {
         $this->region = $region;
 
         return $this;
     }
 
-    /**
-     * @return CoordinatesModel
-     */
-    public function getCoordinate()
+    public function getCoordinate(): CoordinatesModel
     {
         return new CoordinatesModel($this->getLatitude(), $this->getLongitude());
     }
