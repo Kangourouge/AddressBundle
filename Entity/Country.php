@@ -32,7 +32,7 @@ class Country implements CountryInterface
     protected $code;
 
     /**
-     * @ORM\OneToOne(targetEntity="FileInterface::class", cascade={"persist", "merge", "detach"})
+     * @ORM\OneToOne(targetEntity="KRG\AddressBundle\Entity\FileInterface", cascade={"persist", "merge", "detach"})
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id", nullable=true)
      */
     protected $flag;
